@@ -1,9 +1,8 @@
 package game;
 
-import javafx.scene.image.Image;
 import java.util.Random;
 
-public abstract class Character {
+public abstract class Character extends Image {
 
     Random r = new Random();
 
@@ -11,8 +10,12 @@ public abstract class Character {
     private int health, attack, defense, powerCharge = 0, powerLoad;
     private String name;
 
-    //Construtor -> ver como vai fazer com a imagem
-    public Character(int health, int attack, int defense, int powerLoad, String name, Image img) {
+    //Construtor
+    public Character(int health, int attack, int defense, int powerLoad, //Atributos de Image ->
+                     String name, String url, int position_x, int position_y, String sound) {
+        //Instanciando classe pai Image
+        super(url, position_x, position_y, sound);
+        //Instanciando classe Character
         this.health = health;
         this.attack = attack;
         this.defense = defense;
@@ -21,7 +24,7 @@ public abstract class Character {
     }
 
     //Métodos
-    public void attack(Character c) {
+    public int attack(Character c) {
         int damage = this.attack;
 
         //10% de chance de acerto crítico
@@ -37,23 +40,32 @@ public abstract class Character {
 
         //No fim de cada rodada, aumentar a carga do poder do personagem
         increasePowerCharge();
+
+        return damage;
     }
 
-    public void defend() {
-        this.defense = r.nextInt(1,31);
+    public int defend() {
+        //Se o personagem já estiver com pontos de defesa, retirar sua defesa
+        //(pois a defesa dura somente uma rodada)
+        if(this.isDefending())
+            this.setDefense(0);
+
+        this.defense = r.nextInt(15,31);
         powerCharge += powerLoad;
 
         //No fim de cada rodada, aumentar a carga do poder do personagem
         increasePowerCharge();
+
+        return defense;
     }
 
     //Retorna true se defesa for maior que 0 (se está com pontos de defesa)
-    protected boolean isDefending() {
+    private boolean isDefending() {
         return getDefense() > 0;
     }
 
     //Aumenta a carga do poder se ainda não estiver cheia
-    protected void increasePowerCharge() {
+    private void increasePowerCharge() {
         if(this.powerCharge < 100)
             this.powerCharge += this.powerLoad;
         else
@@ -81,6 +93,10 @@ public abstract class Character {
 
     public int getPowerCharge() {
         return powerCharge;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }
