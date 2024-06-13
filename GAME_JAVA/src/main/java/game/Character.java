@@ -9,6 +9,7 @@ public abstract class Character extends Image {
     //Atributos do personagem
     private int health, attack, defense, powerCharge = 0, powerLoad;
     private String name;
+    private boolean imprisioned = false;
 
     //Construtor
     public Character(int health, int attack, int defense, int powerLoad, //Atributos de Image ->
@@ -25,7 +26,14 @@ public abstract class Character extends Image {
 
     //Métodos
     public int attack(Character c) {
-        int damage = this.attack;
+        int damage;
+
+        if(!imprisioned){
+            damage = this.attack;
+            //Ao atacar, aumentar a carga do poder do personagem
+            increasePowerCharge();
+        } else
+            damage = 0;
 
         //10% de chance de acerto crítico
         if (r.nextInt(0,100) < 10)
@@ -37,9 +45,6 @@ public abstract class Character extends Image {
             //(pois a defesa dura somente uma rodada)
         if(c.isDefending())
             c.setDefense(0);
-
-        //No fim de cada rodada, aumentar a carga do poder do personagem
-        increasePowerCharge();
 
         return damage;
     }
@@ -91,12 +96,28 @@ public abstract class Character extends Image {
         this.defense = defense;
     }
 
+    public void setAttack(int attack) {
+        this.attack = attack;
+    }
+
+    public int getAttack() {
+        return attack;
+    }
+
     public int getPowerCharge() {
         return powerCharge;
     }
 
+    public void setPowerCharge(int powerCharge) {
+        this.powerCharge = powerCharge;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setImprisioned(boolean imprisioned) {
+        this.imprisioned = imprisioned;
     }
 
 }
