@@ -26,7 +26,6 @@ public abstract class Character extends Image {
 
     //Métodos
     public int attack(Character c) {
-<<<<<<< HEAD
         int damage;
 
         if(!imprisioned){
@@ -35,9 +34,6 @@ public abstract class Character extends Image {
             increasePowerCharge();
         } else
             damage = 0;
-=======
-        int damage = this.attack;
->>>>>>> a71fc5063ccbc698e256b16e13e88d7c14ddbf63
 
         //10% de chance de acerto crítico
         if (r.nextInt(0,100) < 10)
@@ -50,12 +46,9 @@ public abstract class Character extends Image {
         if(c.isDefending())
             c.setDefense(0);
 
-<<<<<<< HEAD
-=======
         //No fim de cada rodada, aumentar a carga do poder do personagem
         increasePowerCharge();
 
->>>>>>> a71fc5063ccbc698e256b16e13e88d7c14ddbf63
         return damage;
     }
 
@@ -118,22 +111,16 @@ public abstract class Character extends Image {
         return powerCharge;
     }
 
-<<<<<<< HEAD
     public void setPowerCharge(int powerCharge) {
         this.powerCharge = powerCharge;
     }
 
-=======
->>>>>>> a71fc5063ccbc698e256b16e13e88d7c14ddbf63
     public String getName() {
         return name;
     }
 
-<<<<<<< HEAD
     public void setImprisioned(boolean imprisioned) {
         this.imprisioned = imprisioned;
     }
 
-=======
->>>>>>> a71fc5063ccbc698e256b16e13e88d7c14ddbf63
 }
