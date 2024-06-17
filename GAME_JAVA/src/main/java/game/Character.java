@@ -7,15 +7,15 @@ public abstract class Character extends Image {
     Random r = new Random();
 
     //Atributos do personagem
-    private int health, attack, defense, powerCharge = 0, powerLoad;
-    private String name;
-    private boolean imprisioned = false;
+    private int health, attack, defense, powerCharge = 0, imprisioned = 0;
+    private final int powerLoad;
+    private final String name;
 
     //Construtor
     public Character(int health, int attack, int defense, int powerLoad, //Atributos de Image ->
                      String name, String url, int position_x, int position_y, String sound) {
         //Instanciando classe pai Image
-        super(url, position_x, position_y, sound);
+        super(url, position_x, position_y, sound, false);
         //Instanciando classe Character
         this.health = health;
         this.attack = attack;
@@ -28,12 +28,15 @@ public abstract class Character extends Image {
     public int attack(Character c) {
         int damage;
 
-        if(!imprisioned){
+        //Verifca se o personagem está aprisionado (poder da Letícia)
+        if(imprisioned <= 0){
             damage = this.attack;
             //Ao atacar, aumentar a carga do poder do personagem
             increasePowerCharge();
-        } else
+        } else {
             damage = 0;
+            imprisioned--;
+        }
 
         //10% de chance de acerto crítico
         if (r.nextInt(0,100) < 10)
@@ -46,9 +49,6 @@ public abstract class Character extends Image {
         if(c.isDefending())
             c.setDefense(0);
 
-        //No fim de cada rodada, aumentar a carga do poder do personagem
-        increasePowerCharge();
-
         return damage;
     }
 
@@ -56,13 +56,17 @@ public abstract class Character extends Image {
         //Se o personagem já estiver com pontos de defesa, retirar sua defesa
         //(pois a defesa dura somente uma rodada)
         if(this.isDefending())
-            this.setDefense(0);
+            this.defense = 0;
 
-        this.defense = r.nextInt(15,31);
-        powerCharge += powerLoad;
-
-        //No fim de cada rodada, aumentar a carga do poder do personagem
-        increasePowerCharge();
+        //Verifca se o personagem está aprisionado (poder da Letícia)
+        if(imprisioned <= 0){
+            this.defense = r.nextInt(15,31);
+            //Ao defender, aumentar a carga do poder do personagem
+            increasePowerCharge();
+        } else {
+            this.defense = 0;
+            imprisioned--;
+        }
 
         return defense;
     }
@@ -119,7 +123,7 @@ public abstract class Character extends Image {
         return name;
     }
 
-    public void setImprisioned(boolean imprisioned) {
+    public void setImprisioned(int imprisioned) {
         this.imprisioned = imprisioned;
     }
 
