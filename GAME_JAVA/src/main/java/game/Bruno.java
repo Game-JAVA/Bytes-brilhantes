@@ -1,6 +1,8 @@
 package game;
 
-public class Bruno extends Hero{
+import javafx.scene.image.Image;
+
+public class Bruno extends Character{
 
     @Override
     public  void specialPower(Character c){

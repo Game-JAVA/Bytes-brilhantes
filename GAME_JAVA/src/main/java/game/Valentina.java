@@ -1,6 +1,6 @@
 package game;
 
-public class Valentina extends Hero {
+public class Valentina extends Character{
 
     @Override
     public void specialPower(Character c){
