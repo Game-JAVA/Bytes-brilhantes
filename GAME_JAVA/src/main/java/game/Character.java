@@ -49,6 +49,8 @@ public abstract class Character extends Image {
         if(c.isDefending())
             c.setDefense(0);
 
+        this.sound.play();
+
         return damage;
     }
 
@@ -72,19 +74,19 @@ public abstract class Character extends Image {
     }
 
     //Retorna true se defesa for maior que 0 (se está com pontos de defesa)
-    private boolean isDefending() {
+    protected boolean isDefending() {
         return getDefense() > 0;
     }
 
     //Aumenta a carga do poder se ainda não estiver cheia
-    private void increasePowerCharge() {
+    protected void increasePowerCharge() {
         if(this.powerCharge < 100)
             this.powerCharge += this.powerLoad;
         else
             this.powerCharge = 100;
     }
 
-    public abstract void specialPower();
+    public abstract void specialPower(Character c);
 
     //Getters / Setters
     public int getHealth() {
@@ -125,6 +127,10 @@ public abstract class Character extends Image {
 
     public void setImprisioned(int imprisioned) {
         this.imprisioned = imprisioned;
+    }
+
+    public int getImprisioned() {
+        return imprisioned;
     }
 
 }
