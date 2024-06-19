@@ -1,8 +1,5 @@
 package game;
 
-
-import javafx.scene.image.Image;
-
 public class Faria extends Character{
     //O poder especial já começa falso
     private boolean special = false;
@@ -10,8 +7,12 @@ public class Faria extends Character{
     //Número de rodadas é = 0
     private int rounds = 0;
 
+    public Faria(int health, int attack, int defense, int powerLoad, String name, String url, int position_x, int position_y, String sound) {
+        super(health, attack, defense, powerLoad, name, url, position_x, position_y, sound);
+    }
+
     @Override
-    public void SpecialPower() {
+    public void specialPower(Character c) {
         //Se o poder estiver carregado a 100
         if (this.getPowerCharge() == 100) {
             //Vai aumetar o  ataque em 2x
@@ -20,7 +21,6 @@ public class Faria extends Character{
             // poder especial ativo
             special = true;
         }
-
     }
 
     @Override
@@ -42,13 +42,13 @@ public class Faria extends Character{
         int damage;
 
         //Verifca se o personagem está aprisionado (poder da Letícia)
-        if (imprisioned <= 0) {
-            damage = this.attack;
+        if (this.getImprisioned() <= 0) {
+            damage = this.getAttack();
             //Ao atacar, aumentar a carga do poder do personagem
-            increasePowerCharge();
+            this.increasePowerCharge();
         } else {
             damage = 0;
-            imprisioned--;
+            this.setImprisioned(this.getImprisioned() - 1);
         }
 
         //10% de chance de acerto crítico
@@ -65,6 +65,5 @@ public class Faria extends Character{
         return damage;
 
     }
-
 
 }
