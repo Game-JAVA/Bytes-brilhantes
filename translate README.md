@@ -42,7 +42,7 @@ Showing an exceptional talent from a young age for the manipulation of cosmic en
 
 •The game consists of three phases, the first two are battles against the enemy and the third last phase is a battle against the boss. 
 
-*Menstruation* 
+*Rules* 
 
 •The only rule is that the special powers have a charging limit, and to recharge it you need to attack and defend.
 
