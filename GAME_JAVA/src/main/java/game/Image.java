@@ -42,4 +42,7 @@ public class Image {
         this.height = (int) (height * scale);
     }
 
+    public void setImg(ImageIcon img) {
+        this.img = img;
+    }
 }

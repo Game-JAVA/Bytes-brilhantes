@@ -10,7 +10,7 @@ public class VictoryScreen{
 
     VictoryScreen() {
         f = new JFrame("Vitória"); // Cria um JFrame com o título "Vitória"
-        img = new ImageIcon("src/main/java/game/Tela de Vitória.gif"); // Carrega a imagem GIF
+        img = new ImageIcon("img/Tela de Vitória.gif"); // Carrega a imagem GIF
 
         l = new JLabel("", img, JLabel.CENTER); // Cria um JLabel com a imagem centralizada
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Fecha o programa ao fechar a janela
