@@ -199,6 +199,9 @@ public class MainFrame extends JFrame implements Runnable {
         bottomDivision.setRightComponent(buttonsPanel);
 
         //Ação de cada botão - A IMPLEMENTAR!!
+
+
+
         buttons.getFirst().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int attack = heroes.get(currentHero).attack(heroes.get(1));
@@ -211,6 +214,15 @@ public class MainFrame extends JFrame implements Runnable {
                 System.out.println(currentHero);
             }
         });
+
+        //Ação do Botão de defesa
+        buttons.get(1).addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                heroes.get(currentHero).defend();
+                texts.setText(heroes.get(currentHero).getName() + " defended herself from " + heroes.get(1).getName());
+            }
+        });
+
 
         //Instancia as barras de vida iniciais (começando com 10 de vida)
         Image heroHealth = new Image("img/Health/10.png", 50, 170);
