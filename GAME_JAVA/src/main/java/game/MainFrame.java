@@ -200,18 +200,11 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Ação de cada botão - A IMPLEMENTAR!!
 
-
-
+        //Botão de ataque
         buttons.getFirst().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int attack = heroes.get(currentHero).attack(heroes.get(1));
-                texts.setText(heroes.getFirst().getName() + " attacked " + heroes.get(1).getName() + ", dealing " + attack + " damage!");
-            }
-        });
-        buttons.get(3).addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                currentHero++;
-                System.out.println(currentHero);
+                texts.setText(heroes.get(currentHero).getName() + " attacked " + heroes.get(1).getName() + ", dealing " + attack + " damage!");
             }
         });
 
@@ -222,6 +215,16 @@ public class MainFrame extends JFrame implements Runnable {
                 texts.setText(heroes.get(currentHero).getName() + " defended herself from " + heroes.get(1).getName());
             }
         });
+
+        // Ação do Botão de poder especial
+
+        buttons.get(2).addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                heroes.get(currentHero).specialPower(heroes.get(1));
+                texts.setText(heroes.getFirst().getName() + " especial" + heroes.get(1).getName());
+            }
+        });
+
 
 
         //Instancia as barras de vida iniciais (começando com 10 de vida)
