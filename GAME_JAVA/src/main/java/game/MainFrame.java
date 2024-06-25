@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MainFrame extends JFrame implements Runnable {
@@ -20,6 +21,7 @@ public class MainFrame extends JFrame implements Runnable {
     private long millis1 = clock.millis();
     private long millis2 = millis1;
     private Font retroFont;
+    private ArrayList<game.Character> heroes; // Declara uma lista de personagens (heróis)
 
     public MainFrame() {
         pauseOverlay = new PauseOverlay();
@@ -198,7 +200,7 @@ public class MainFrame extends JFrame implements Runnable {
         bottomDivision.setLeftComponent(texts);
         bottomDivision.setRightComponent(buttonsPanel);
 
-        //Ação de cada botão - A IMPLEMENTAR!!
+        //Ação de cada botão
 
         //Botão de ataque
         buttons.getFirst().addActionListener(new ActionListener() {
@@ -221,11 +223,23 @@ public class MainFrame extends JFrame implements Runnable {
         buttons.get(2).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 heroes.get(currentHero).specialPower(heroes.get(1));
-                texts.setText(heroes.getFirst().getName() + " especial" + heroes.get(1).getName());
+                texts.setText(heroes.get(currentHero).getName() + " used special attack " + heroes.get(1).getName());
             }
         });
 
-
+        // Ação do Botão de troca
+        buttons.get(3).addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero);
+                popUp.setVisible(true); // Exibe o diálogo modal
+                Character selectedCharacter = popUp.getSelectedCharacter();
+                if (selectedCharacter != null) {
+                    currentHero = heroes.indexOf(selectedCharacter); // Atualiza o índice do herói atual
+                    // Atualize as imagens e outras representações gráficas conforme necessário
+                    repaint(); // Redesenha a tela após a troca de personagem
+                }
+            }
+        });
 
         //Instancia as barras de vida iniciais (começando com 10 de vida)
         Image heroHealth = new Image("img/Health/10.png", 50, 170);
