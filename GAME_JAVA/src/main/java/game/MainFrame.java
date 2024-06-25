@@ -15,7 +15,7 @@ import java.util.Objects;
 public class MainFrame extends JFrame implements Runnable {
     private boolean isPaused = false;
     private PauseOverlay pauseOverlay;
-    private int currentHero = 0;
+    private int currentHero = 0, levels = 0;
     private Clock clock = Clock.systemDefaultZone();
     private long millis1 = clock.millis();
     private long millis2 = millis1;
@@ -135,7 +135,7 @@ public class MainFrame extends JFrame implements Runnable {
             return "img/Health/3.png";
         } else if(c.getHealth() >= 20) {
             return "img/Health/2.png";
-        } else if(c.getHealth() >= 10) {
+        } else if(c.getHealth() >= 10 || c.getHealth() > 0) {
             return "img/Health/1.png";
         } else {
             return "img/Health/0.png";
@@ -151,7 +151,7 @@ public class MainFrame extends JFrame implements Runnable {
         setLayout(new GridLayout(1, 1));
 
         //Background
-        game.Image backgroundImage = new game.Image("img/Background.png", 0, 0);
+        game.Image backgroundImage = new game.Image("img/Background1.png", 0, 0);
 
         //Array onde os heróis são instanciados
         ArrayList<game.Character> heroes = new ArrayList<>();
@@ -202,7 +202,8 @@ public class MainFrame extends JFrame implements Runnable {
         buttons.getFirst().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int attack = heroes.get(currentHero).attack(heroes.get(1));
-                texts.setText(heroes.getFirst().getName() + " attacked " + heroes.get(1).getName() + ", dealing " + attack + " damage!");
+                texts.setText(heroes.getFirst().getName() + " attacked " +
+                        heroes.get(1).getName() + ", dealing " + attack + " damage!");
             }
         });
         buttons.get(3).addActionListener(new ActionListener() {
@@ -241,6 +242,16 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Adiciona a divisão ao JFrame atual
         add(division);
+
+        Image victory = new Image("img/Tela de Vitória.gif", 0, 0);
+        JPanel victoryPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                victory.draw(g);
+            }
+        };
+        victoryPane.setVisible(true);
+
         //Abre em tela cheia
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         //Abre a tela
@@ -261,7 +272,47 @@ public class MainFrame extends JFrame implements Runnable {
 
             if ((millis1 - millis2) > 200) {
                 division.updateUI();
+                victoryPane.updateUI();
                 millis2 = millis1;
+            }
+
+            //Se zerar a vida do inimigo, reinicia o nível
+            if(heroes.get(1).getHealth() <= 0) {
+                remove(division);
+                add(victoryPane);
+
+//                for(int i = 0; i < 8; i++) {
+//                    victoryPane.updateUI();
+//                    try {
+//                        Thread.sleep(50);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                }
+
+                switch (levels) {
+                    case 0:
+                        backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
+                                getResource("img/Background2.png"))));
+                        break;
+
+                    case 1:
+                        backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
+                                getResource("img/Background3.png"))));
+                        break;
+
+                    case 2:
+                        backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
+                                getResource("img/BackgroundBoss.png"))));
+                        break;
+
+                    default:
+                        break;
+                }
+
+                levels++;
+                heroes.get(1).setHealth(100);
+                texts.setText("Level passed!");
             }
 
             // Unidade de tempo da animação
