@@ -10,12 +10,14 @@ public class PopUp extends JDialog {
     private Character selectedCharacter; // Personagem selecionado pelo jogador
     private List<Character> heroes; // Lista de personagens disponíveis para seleção
     private int currentHeroIndex; // Índice do herói atual que será trocado
+    private boolean isReviving; // Indica se Valentina está tentando reviver um personagem
 
     // Construtor da classe PopUp
-    public PopUp(Frame owner, List<Character> characters, int currentHeroIndex) {
-        super(owner, "Select a Character to Swap", true); // Chama o construtor da superclasse JDialog
+    public PopUp(Frame owner, List<Character> characters, int currentHeroIndex, boolean isReviving) {
+        super(owner, isReviving ? "Select a Character to Revive" : "Select a Character to Swap", true); // Chama o construtor da superclasse JDialog
         this.heroes = characters; // Inicializa a lista de personagens
         this.currentHeroIndex = currentHeroIndex; // Inicializa o índice do herói atual
+        this.isReviving = isReviving; // Inicializa se é uma ação de reviver
         initialize(); // Inicializa o diálogo
     }
 
@@ -27,6 +29,9 @@ public class PopUp extends JDialog {
         for (int i = 0; i < heroes.size(); i++) {
             if (i != currentHeroIndex) { // Verifica se o índice é diferente do índice do herói atual
                 Character character = heroes.get(i); // Obtém o personagem na posição i da lista
+                if (isReviving && character.getHealth() > 0) {
+                    continue; // Se estamos revivendo, pule os personagens com vida > 0
+                }
                 JButton button = new JButton(character.getName()); // Cria um botão com o nome do personagem
                 button.addActionListener(new ActionListener() {
                     @Override

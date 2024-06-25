@@ -202,44 +202,76 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Ação de cada botão
 
-        //Botão de ataque
+        // Botão de ataque
         buttons.getFirst().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                // Executa o ataque do herói atual (currentHero) contra o vilão (heroes.get(1))
                 int attack = heroes.get(currentHero).attack(heroes.get(1));
+                // Atualiza o texto para mostrar o ataque realizado e o dano causado
                 texts.setText(heroes.get(currentHero).getName() + " attacked " + heroes.get(1).getName() + ", dealing " + attack + " damage!");
             }
         });
 
-        //Ação do Botão de defesa
+         // Botão de defesa
         buttons.get(1).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                // Executa a defesa do herói atual (currentHero)
                 heroes.get(currentHero).defend();
+                // Atualiza o texto para mostrar que o herói atual defendeu contra o vilão
                 texts.setText(heroes.get(currentHero).getName() + " defended herself from " + heroes.get(1).getName());
             }
         });
 
-        // Ação do Botão de poder especial
-
+        // Botão de poder especial
         buttons.get(2).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                heroes.get(currentHero).specialPower(heroes.get(1));
-                texts.setText(heroes.get(currentHero).getName() + " used special attack " + heroes.get(1).getName());
-            }
-        });
-
-        // Ação do Botão de troca
-        buttons.get(3).addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero);
-                popUp.setVisible(true); // Exibe o diálogo modal
-                Character selectedCharacter = popUp.getSelectedCharacter();
-                if (selectedCharacter != null) {
-                    currentHero = heroes.indexOf(selectedCharacter); // Atualiza o índice do herói atual
-                    // Atualize as imagens e outras representações gráficas conforme necessário
-                    repaint(); // Redesenha a tela após a troca de personagem
+                // Obtém o herói atual
+                Character currentCharacter = heroes.get(currentHero);
+                // Verifica se o herói atual é uma instância de Valentina
+                if (currentCharacter instanceof Valentina) {
+                    // Cria um PopUp para selecionar um personagem para reviver
+                    PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, true);
+                    popUp.setVisible(true); // Exibe o diálogo modal
+                    // Obtém o personagem selecionado no PopUp
+                    Character selectedCharacter = popUp.getSelectedCharacter();
+                    // Se um personagem foi selecionado e está com a saúde menor ou igual a 0
+                    if (selectedCharacter != null && selectedCharacter.getHealth() <= 0) {
+                        // Valentina usa seu poder especial para reviver o personagem
+                        currentCharacter.specialPower(selectedCharacter);
+                        // Atualiza o texto para mostrar que Valentina reviveu o personagem
+                        texts.setText(currentCharacter.getName() + " revived " + selectedCharacter.getName() + "!");
+                        // Define a saúde do personagem revivido para 100
+                        selectedCharacter.setHealth(100);
+                    }
+                } else {
+                    // Se não for Valentina, usa o poder especial contra o vilão
+                    currentCharacter.specialPower(heroes.get(1)); // Assume que a primeira posição é o vilão
+                    // Atualiza o texto para mostrar que o herói usou seu ataque especial no vilão
+                    texts.setText(currentCharacter.getName() + " used special attack on " + heroes.get(1).getName());
                 }
             }
         });
+
+        // Botão de troca
+        buttons.get(3).addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Cria um PopUp para selecionar um personagem para troca
+                PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, false);
+                popUp.setVisible(true); // Exibe o diálogo modal
+                // Obtém o personagem selecionado no PopUp
+                Character selectedCharacter = popUp.getSelectedCharacter();
+                // Se um personagem foi selecionado
+                if (selectedCharacter != null) {
+                    // Atualiza o índice do herói atual para o personagem selecionado
+                    currentHero = heroes.indexOf(selectedCharacter);
+                    // Atualiza as imagens e outras representações gráficas conforme necessário
+                    repaint(); // Redesenha a tela após a troca de personagem
+                    // Atualiza o texto para mostrar que o herói atual foi trocado
+                    texts.setText("Swapped to " + selectedCharacter.getName() + "!");
+                }
+            }
+        });
+
 
         //Instancia as barras de vida iniciais (começando com 10 de vida)
         Image heroHealth = new Image("img/Health/10.png", 50, 170);
