@@ -243,6 +243,7 @@ public class MainFrame extends JFrame implements Runnable {
         //Adiciona a divisão ao JFrame atual
         add(division);
 
+        //Painel que contém a tela de vitória
         Image victory = new Image("img/Tela de Vitória.gif", 0, 0);
         JPanel victoryPane = new JPanel() {
             @Override
@@ -251,6 +252,16 @@ public class MainFrame extends JFrame implements Runnable {
             }
         };
         victoryPane.setVisible(true);
+
+        //Painel que contém o gif de transição
+        Image transition = new Image("img/transition2.gif", 0, 0);
+        JPanel transitionPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                transition.draw(g);
+            }
+        };
+        transitionPane.setVisible(true);
 
         //Abre em tela cheia
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -261,6 +272,7 @@ public class MainFrame extends JFrame implements Runnable {
         //Deixa os gifs animados
         //A lógica de progressão do jogo deve ser implementada aqui - Provavelmente
         while (true) {
+            System.out.println(this.getWidth() + "   " + this.getHeight());
             heroHealth.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(hpBar(heroes.get(currentHero))))));
             enemyHealth.setImg(new ImageIcon(Objects.requireNonNull
@@ -279,16 +291,19 @@ public class MainFrame extends JFrame implements Runnable {
             //Se zerar a vida do inimigo, reinicia o nível
             if(heroes.get(1).getHealth() <= 0) {
                 remove(division);
-                add(victoryPane);
+                add(transitionPane);
 
-//                for(int i = 0; i < 8; i++) {
-//                    victoryPane.updateUI();
-//                    try {
-//                        Thread.sleep(50);
-//                    } catch (InterruptedException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                }
+                for(int i = 0; i < 300; i++) {
+                    transitionPane.updateUI();
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                remove(transitionPane);
+                add(division);
 
                 switch (levels) {
                     case 0:
