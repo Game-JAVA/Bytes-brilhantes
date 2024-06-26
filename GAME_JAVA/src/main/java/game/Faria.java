@@ -24,7 +24,7 @@ public class Faria extends Character{
     }
 
     @Override
-    public int attack(Character c) {
+    public String attack(Character c) {
         if (special) {
             //Se passar de 3 rodadas, o ataque especial para de funcionar
             if (rounds >= 3) {
@@ -42,28 +42,32 @@ public class Faria extends Character{
         int damage;
 
         //Verifca se o personagem está aprisionado (poder da Letícia)
-        if (this.getImprisioned() <= 0) {
-            damage = this.getAttack();
+        if(this.getImprisioned() <= 0){
+            damage = this.getAttack() - (c.getMitigation() + c.getDefense());
+            if(damage < 0)
+                damage = 0;
             //Ao atacar, aumentar a carga do poder do personagem
-            this.increasePowerCharge();
+            increasePowerCharge();
         } else {
             damage = 0;
-            this.setImprisioned(this.getImprisioned() - 1);
+            this.setImprisioned(this.getImprisioned() - 1);;
+            return this.getName() + " is imprisioned!";
         }
 
         //10% de chance de acerto crítico
-        if (r.nextInt(0, 100) < 10)
+        if (r.nextInt(0,100) < 10)
             damage *= 2;
 
-        c.setHealth((c.getHealth() + c.getDefense()) - damage);
+        c.setHealth(c.getHealth() - damage);
 
         //Se o inimigo estiver com pontos de defesa após o combate, retirar sua defesa
         //(pois a defesa dura somente uma rodada)
-        if (c.isDefending())
+        if(c.isDefending())
             c.setDefense(0);
 
-        return damage;
+        this.sound.play();
 
+        return this.getName() + " attacked " + c.getName() + ", dealing " + damage + " damage!";
     }
 
 }

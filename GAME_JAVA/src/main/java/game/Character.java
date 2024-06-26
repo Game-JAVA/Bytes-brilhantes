@@ -7,54 +7,57 @@ public abstract class Character extends Image {
     Random r = new Random();
 
     //Atributos do personagem
-    private int health, attack, defense, powerCharge = 0, imprisioned = 0;
+    private int health, attack, mitigation, defense = 0, powerCharge = 0, imprisioned = 0;
     private final int powerLoad;
     private final String name;
 
     //Construtor
-    public Character(int health, int attack, int defense, int powerLoad, //Atributos de Image ->
+    public Character(int health, int attack, int mitigation, int powerLoad, //Atributos de Image ->
                      String name, String url, int position_x, int position_y, String sound) {
         //Instanciando classe pai Image
         super(url, position_x, position_y, sound, false);
         //Instanciando classe Character
         this.health = health;
         this.attack = attack;
-        this.defense = defense;
+        this.mitigation = mitigation;
         this.name = name;
         this.powerLoad = powerLoad;
     }
 
     //Métodos
-    public int attack(Character c) {
+    public String attack(Character c) {
         int damage;
 
         //Verifca se o personagem está aprisionado (poder da Letícia)
         if(imprisioned <= 0){
-            damage = this.attack;
+            damage = this.attack - (c.getMitigation() + c.getDefense());
+            if(damage < 0)
+                damage = 0;
             //Ao atacar, aumentar a carga do poder do personagem
             increasePowerCharge();
         } else {
             damage = 0;
             imprisioned--;
+            return this.getName() + " is imprisioned!";
         }
 
         //10% de chance de acerto crítico
         if (r.nextInt(0,100) < 10)
             damage *= 2;
 
-        c.setHealth((c.getHealth() + c.getDefense()) - damage);
+        c.setHealth(c.getHealth() - damage);
 
         //Se o inimigo estiver com pontos de defesa após o combate, retirar sua defesa
-            //(pois a defesa dura somente uma rodada)
+        //(pois a defesa dura somente uma rodada)
         if(c.isDefending())
             c.setDefense(0);
 
         this.sound.play();
 
-        return damage;
+        return this.getName() + " attacked " + c.getName() + ", dealing " + damage + " damage!";
     }
 
-    public int defend() {
+    public String defend() {
         //Se o personagem já estiver com pontos de defesa, retirar sua defesa
         //(pois a defesa dura somente uma rodada)
         if(this.isDefending())
@@ -62,15 +65,16 @@ public abstract class Character extends Image {
 
         //Verifca se o personagem está aprisionado (poder da Letícia)
         if(imprisioned <= 0){
-            this.defense = r.nextInt(15,31);
+            this.defense = r.nextInt(10,21);
             //Ao defender, aumentar a carga do poder do personagem
             increasePowerCharge();
         } else {
             this.defense = 0;
             imprisioned--;
+            return this.getName() + " is imprisioned!";
         }
 
-        return defense;
+        return this.getName() + " defended itself by " + this.defense + " points!";
     }
 
     //Retorna true se defesa for maior que 0 (se está com pontos de defesa)
@@ -131,6 +135,10 @@ public abstract class Character extends Image {
 
     public int getImprisioned() {
         return imprisioned;
+    }
+
+    public int getMitigation() {
+        return mitigation;
     }
 
 }

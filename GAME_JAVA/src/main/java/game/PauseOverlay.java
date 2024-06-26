@@ -11,16 +11,20 @@ import javax.swing.ImageIcon;
 
 public class PauseOverlay extends JPanel {
     private boolean paused;
-    private Image pauseImage;
+    private game.Image pauseImage;
 
     public PauseOverlay() {
         setOpaque(false);
 
+        pauseImage = new game.Image("img/Pause.png", 327, 162);
+
+        /*
         // Carregar a imagem de pausa
         URL pauseUrl = getClass().getResource("/img/Pause.png");
         if (pauseUrl != null) {
             pauseImage = new ImageIcon(pauseUrl).getImage();
         }
+         */
         paused = false;
     }
 
@@ -42,11 +46,7 @@ public class PauseOverlay extends JPanel {
 
             // Desenhar a imagem de pausa no centro
             if (pauseImage != null) {
-                int imgWidth = pauseImage.getWidth(this);
-                int imgHeight = pauseImage.getHeight(this);
-                int x = (getWidth() - imgWidth) / 2;
-                int y = (getHeight() - imgHeight) / 2;
-                g2d.drawImage(pauseImage, x, y, this);
+                pauseImage.draw(g);
             }
             g2d.dispose();
         }

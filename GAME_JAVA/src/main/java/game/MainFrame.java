@@ -11,15 +11,17 @@ import java.io.InputStream;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 
 public class MainFrame extends JFrame implements Runnable {
-    private boolean isPaused = false;
+    private boolean isPaused = false, action = false;
     private PauseOverlay pauseOverlay;
-    private int currentHero = 0;
+    private int currentHero = 0, levels = 0;
+    private int currentEnemy = 0;
     private Clock clock = Clock.systemDefaultZone();
-    private long millis1 = clock.millis();
-    private long millis2 = millis1;
+    private long millis1 = clock.millis(), millis2 = millis1, millis3 = millis1;
     private Font retroFont;
+    private Random r = new Random();
 
     public MainFrame() {
         pauseOverlay = new PauseOverlay();
@@ -135,7 +137,7 @@ public class MainFrame extends JFrame implements Runnable {
             return "img/Health/3.png";
         } else if(c.getHealth() >= 20) {
             return "img/Health/2.png";
-        } else if(c.getHealth() >= 10) {
+        } else if(c.getHealth() >= 10 || c.getHealth() > 0) {
             return "img/Health/1.png";
         } else {
             return "img/Health/0.png";
@@ -151,19 +153,23 @@ public class MainFrame extends JFrame implements Runnable {
         setLayout(new GridLayout(1, 1));
 
         //Background
-        game.Image backgroundImage = new game.Image("img/Background.png", 0, 0);
+        game.Image backgroundImage = new game.Image("img/Background1.png", 0, 0);
 
         //Array onde os heróis são instanciados
         ArrayList<game.Character> heroes = new ArrayList<>();
-        heroes.add(new Bruno(100, 6, 15, 50, "Bruno",
+        heroes.add(new Bruno(100, 6, 5, 50, "Bruno",
                 "img/Bruno.gif", 50, 200, "sound/hit.wav"));
-        //Vilão
-        heroes.add(new Faria(100, 10, 20, 20, "Faria",
-                "img/Faria.gif", 1000, 50, "sound/hit.wav"));
+        heroes.add(new Faria(100, 10, 5, 20, "Faria",
+                "img/Faria.gif", 50, 200, "sound/hit.wav"));
         heroes.add(new Leticia(100, 20, 6, 15, "Leticia",
                 "img/Leticia.gif", 50, 200, "sound/hit.wav"));
         heroes.add(new Valentina(100, 15, 10, 10, "Valentina",
                 "img/Valentina.gif", 50, 200, "sound/hit.wav"));
+
+        //Vilão
+        ArrayList<game.Character> enemies = new ArrayList<>();
+        enemies.add(new Enemy(100, 10, 10, 30, "Vilao",
+                "img/Vilao1.gif", 1000, 50, "sound/hit.wav"));
 
         //Painel dos botões
         JPanel buttonsPanel = new JPanel();
@@ -199,33 +205,26 @@ public class MainFrame extends JFrame implements Runnable {
         bottomDivision.setRightComponent(buttonsPanel);
 
         //Ação de cada botão - A IMPLEMENTAR!!
-
-        //Botão de ataque
         buttons.getFirst().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int attack = heroes.get(currentHero).attack(heroes.get(1));
-                texts.setText(heroes.get(currentHero).getName() + " attacked " + heroes.get(1).getName() + ", dealing " + attack + " damage!");
+                if(!action) {
+                    String attack = heroes.get(currentHero).attack(heroes.get(1));
+                    texts.setText(attack);
+                    action = true;
+                    millis1 = clock.millis();
+                    millis3 = millis1;
+                }
             }
         });
-
-        //Ação do Botão de defesa
-        buttons.get(1).addActionListener(new ActionListener() {
+        buttons.get(3).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                heroes.get(currentHero).defend();
-                texts.setText(heroes.get(currentHero).getName() + " defended herself from " + heroes.get(1).getName());
+                if(!action) {
+                    currentHero++;
+                    System.out.println(currentHero);
+                    action = true;
+                }
             }
         });
-
-        // Ação do Botão de poder especial
-
-        buttons.get(2).addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                heroes.get(currentHero).specialPower(heroes.get(1));
-                texts.setText(heroes.getFirst().getName() + " especial" + heroes.get(1).getName());
-            }
-        });
-
-
 
         //Instancia as barras de vida iniciais (começando com 10 de vida)
         Image heroHealth = new Image("img/Health/10.png", 50, 170);
@@ -239,6 +238,8 @@ public class MainFrame extends JFrame implements Runnable {
                 heroes.get(currentHero).draw(g);
                 heroes.get(1).draw(g);
                 heroHealth.draw(g);
+
+                //enemies.get(currentEnemy).draw(g);
                 enemyHealth.draw(g);
             }
         };
@@ -256,6 +257,27 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Adiciona a divisão ao JFrame atual
         add(division);
+
+        //Painel que contém a tela de vitória
+        Image victory = new Image("img/Tela de Vitória.gif", 0, 0);
+        JPanel victoryPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                victory.draw(g);
+            }
+        };
+        victoryPane.setVisible(true);
+
+        //Painel que contém o gif de transição
+        Image transition = new Image("img/transition2.gif", 0, 0);
+        JPanel transitionPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                transition.draw(g);
+            }
+        };
+        transitionPane.setVisible(true);
+
         //Abre em tela cheia
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         //Abre a tela
@@ -265,6 +287,7 @@ public class MainFrame extends JFrame implements Runnable {
         //Deixa os gifs animados
         //A lógica de progressão do jogo deve ser implementada aqui - Provavelmente
         while (true) {
+            //Atualiza as imagens das barras de vida e do herói atual
             heroHealth.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(hpBar(heroes.get(currentHero))))));
             enemyHealth.setImg(new ImageIcon(Objects.requireNonNull
@@ -272,11 +295,75 @@ public class MainFrame extends JFrame implements Runnable {
             heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource("img/" + heroes.get(currentHero).getName() + ".gif"))));
 
+            //A cada 200ms, atualiza as animações
             millis1 = clock.millis();
-
             if ((millis1 - millis2) > 200) {
                 division.updateUI();
+                victoryPane.updateUI();
                 millis2 = millis1;
+            }
+
+            //Caso uma ação aconteça (botão seja pressionado), passa o round pro inimigo
+            if(action && (millis1 - millis3) > 2000) {
+                if(heroes.get(1).getPowerCharge() >= 100 && heroes.get(1).getImprisioned() == 0)
+                    heroes.get(1).specialPower(heroes.get(currentHero));
+                else {
+                    int decision = r.nextInt(0,4);
+                    switch(decision) {
+                        case 3:
+                            String defense = heroes.get(1).defend();
+                            texts.setText(defense);
+                            break;
+
+                        default:
+                            String attack = heroes.get(1).attack(heroes.get(currentHero));
+                            texts.setText(attack);
+                    }
+                }
+
+                action = false;
+            }
+
+            //Se zerar a vida do inimigo, reinicia o nível
+            if(heroes.get(1).getHealth() <= 0) {
+                remove(division);
+                add(transitionPane);
+
+                for(int i = 0; i < 300; i++) {
+                    transitionPane.updateUI();
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                remove(transitionPane);
+                add(division);
+
+                switch (levels) {
+                    case 0:
+                        backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
+                                getResource("img/Background2.png"))));
+                        break;
+
+                    case 1:
+                        backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
+                                getResource("img/Background3.png"))));
+                        break;
+
+                    case 2:
+                        backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
+                                getResource("img/BackgroundBoss.png"))));
+                        break;
+
+                    default:
+                        break;
+                }
+
+                levels++;
+                heroes.get(1).setHealth(100);
+                texts.setText("Level passed!");
             }
 
             // Unidade de tempo da animação
