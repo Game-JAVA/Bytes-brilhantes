@@ -11,15 +11,16 @@ import java.io.InputStream;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 
 public class MainFrame extends JFrame implements Runnable {
-    private boolean isPaused = false;
+    private boolean isPaused = false, action = false;
     private PauseOverlay pauseOverlay;
     private int currentHero = 0, levels = 0;
     private Clock clock = Clock.systemDefaultZone();
-    private long millis1 = clock.millis();
-    private long millis2 = millis1;
+    private long millis1 = clock.millis(), millis2 = millis1, millis3 = millis1;
     private Font retroFont;
+    private Random r = new Random();
 
     public MainFrame() {
         pauseOverlay = new PauseOverlay();
@@ -155,10 +156,10 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Array onde os heróis são instanciados
         ArrayList<game.Character> heroes = new ArrayList<>();
-        heroes.add(new Bruno(100, 6, 15, 50, "Bruno",
+        heroes.add(new Bruno(100, 6, 5, 50, "Bruno",
                 "img/Bruno.gif", 50, 200, "sound/hit.wav"));
         //Vilão
-        heroes.add(new Faria(100, 10, 20, 20, "Faria",
+        heroes.add(new Faria(100, 10, 5, 20, "Faria",
                 "img/Faria.gif", 1000, 50, "sound/hit.wav"));
         heroes.add(new Leticia(100, 20, 6, 15, "Leticia",
                 "img/Leticia.gif", 50, 200, "sound/hit.wav"));
@@ -201,15 +202,22 @@ public class MainFrame extends JFrame implements Runnable {
         //Ação de cada botão - A IMPLEMENTAR!!
         buttons.getFirst().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int attack = heroes.get(currentHero).attack(heroes.get(1));
-                texts.setText(heroes.getFirst().getName() + " attacked " +
-                        heroes.get(1).getName() + ", dealing " + attack + " damage!");
+                if(!action) {
+                    String attack = heroes.get(currentHero).attack(heroes.get(1));
+                    texts.setText(attack);
+                    action = true;
+                    millis1 = clock.millis();
+                    millis3 = millis1;
+                }
             }
         });
         buttons.get(3).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                currentHero++;
-                System.out.println(currentHero);
+                if(!action) {
+                    currentHero++;
+                    System.out.println(currentHero);
+                    action = true;
+                }
             }
         });
 
@@ -272,7 +280,7 @@ public class MainFrame extends JFrame implements Runnable {
         //Deixa os gifs animados
         //A lógica de progressão do jogo deve ser implementada aqui - Provavelmente
         while (true) {
-            System.out.println(this.getWidth() + "   " + this.getHeight());
+            //Atualiza as imagens das barras de vida e do herói atual
             heroHealth.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(hpBar(heroes.get(currentHero))))));
             enemyHealth.setImg(new ImageIcon(Objects.requireNonNull
@@ -280,12 +288,33 @@ public class MainFrame extends JFrame implements Runnable {
             heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource("img/" + heroes.get(currentHero).getName() + ".gif"))));
 
+            //A cada 200ms, atualiza as animações
             millis1 = clock.millis();
-
             if ((millis1 - millis2) > 200) {
                 division.updateUI();
                 victoryPane.updateUI();
                 millis2 = millis1;
+            }
+
+            //Caso uma ação aconteça (botão seja pressionado), passa o round pro inimigo
+            if(action && (millis1 - millis3) > 2000) {
+                if(heroes.get(1).getPowerCharge() >= 100 && heroes.get(1).getImprisioned() == 0)
+                    heroes.get(1).specialPower(heroes.get(currentHero));
+                else {
+                    int decision = r.nextInt(0,4);
+                    switch(decision) {
+                        case 3:
+                            String defense = heroes.get(1).defend();
+                            texts.setText(defense);
+                            break;
+
+                        default:
+                            String attack = heroes.get(1).attack(heroes.get(currentHero));
+                            texts.setText(attack);
+                    }
+                }
+
+                action = false;
             }
 
             //Se zerar a vida do inimigo, reinicia o nível
