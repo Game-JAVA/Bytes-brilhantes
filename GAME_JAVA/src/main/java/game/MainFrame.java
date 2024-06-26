@@ -143,6 +143,16 @@ public class MainFrame extends JFrame implements Runnable {
         }
     }
 
+    private String defenseBar(Character c) {
+        if(c.getDefense() >= 20) {
+            return "img/Defense/2.png";
+        } else if(c.getDefense() >= 10) {
+            return "img/Defense/2-1.png";
+        } else {
+            return "img/Defense/2-2.png";
+        }
+    }
+
     public void run() {
         Graphics g = getBufferStrategy().getDrawGraphics();
         //Limpa a tela
@@ -225,6 +235,10 @@ public class MainFrame extends JFrame implements Runnable {
         Image heroHealth = new Image("img/Health/10.png", 50, 170);
         Image enemyHealth = new Image("img/Health/10.png", 1000, 10);
 
+        //Instancia as barras de defesa iniciais (começando invisíveis)
+        Image heroDefense = new Image("img/Defense/2-2.png", 73, 160);
+        Image enemyDefense = new Image("img/Defense/2-2.png", 1023, 0);
+
         //Cria o JPane em que as imagens (jogador, inimigo e plano de fundo) são desenhadas
         JPanel pane = new JPanel() {
             @Override
@@ -234,6 +248,8 @@ public class MainFrame extends JFrame implements Runnable {
                 heroes.get(1).draw(g);
                 heroHealth.draw(g);
                 enemyHealth.draw(g);
+                heroDefense.draw(g);
+                enemyDefense.draw(g);
             }
         };
 
@@ -285,6 +301,10 @@ public class MainFrame extends JFrame implements Runnable {
                     (this.getClass().getResource(hpBar(heroes.get(currentHero))))));
             enemyHealth.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(hpBar(heroes.get(1))))));
+            heroDefense.setImg(new ImageIcon(Objects.requireNonNull
+                    (this.getClass().getResource(defenseBar(heroes.get(currentHero))))));
+            enemyDefense.setImg(new ImageIcon(Objects.requireNonNull
+                    (this.getClass().getResource(defenseBar(heroes.get(1))))));
             heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource("img/" + heroes.get(currentHero).getName() + ".gif"))));
 
