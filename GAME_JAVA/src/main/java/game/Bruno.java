@@ -9,7 +9,7 @@ public class Bruno extends Character {
     @Override
     public  void specialPower(Character c){
         //Se o poder estiver carregado
-        if (this.getPowerCharge() == 100 ){
+        if (this.getPowerCharge() == 100){
 
             //O ataque será multiplicado por 3
             this.setAttack(this.getAttack()*3);
