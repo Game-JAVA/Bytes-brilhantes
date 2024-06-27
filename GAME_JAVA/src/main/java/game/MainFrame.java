@@ -18,6 +18,7 @@ public class MainFrame extends JFrame implements Runnable {
     private long millis1 = clock.millis(), millis2 = millis1, millis3 = millis1;
     private Font retroFont;
     private Random r = new Random();
+    private JLabel specialGifLabel; // Novo JLabel para exibir o GIF especial
 
     public MainFrame() {
         pauseOverlay = new PauseOverlay();
@@ -206,24 +207,130 @@ public class MainFrame extends JFrame implements Runnable {
         bottomDivision.setLeftComponent(texts);
         bottomDivision.setRightComponent(buttonsPanel);
 
-        //Ação de cada botão - A IMPLEMENTAR!!
-        buttons.getFirst().addActionListener(new ActionListener() {
+        // Ação de cada botão
+        // Botão de ataque
+        buttons.get(0).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(!action) {
+                    // Executa o ataque do herói atual (currentHero) contra o vilão (heroes.get(1))
                     String attack = heroes.get(currentHero).attack(heroes.get(1));
+                    // Atualiza o texto para mostrar o ataque realizado e o dano causado
                     texts.setText(attack);
                     action = true;
-                    millis1 = clock.millis();
-                    millis3 = millis1;
+                    millis3 = clock.millis();
                 }
             }
         });
+
+        // Botão de defesa
+        buttons.get(1).addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(!action) {
+                    // Executa a defesa do herói atual (currentHero)
+                    String defense = heroes.get(currentHero).defend();
+                    // Atualiza o texto para mostrar que o herói atual defendeu contra o vilão
+                    texts.setText(defense);
+                    action = true;
+                    millis3 = clock.millis();
+                }
+            }
+        });
+
+        // Botão de poder especial
+        buttons.get(2).addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                // Obtém o herói atual
+                Character currentCharacter = heroes.get(currentHero);
+                if(currentCharacter.getPowerCharge() >= 100 && !action){
+                    // Verifica se o herói atual é uma instância de Valentina
+                    if (currentCharacter instanceof Valentina) {
+                        // Cria um PopUp para selecionar um personagem para reviver
+                        PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, true);
+                        popUp.setVisible(true); // Exibe o diálogo modal
+
+                        // Obtém o personagem selecionado no PopUp
+                        Character selectedCharacter = popUp.getSelectedCharacter();
+
+                        // Se um personagem foi selecionado e está com a saúde menor ou igual a 0
+                        if (selectedCharacter != null && selectedCharacter.getHealth() <= 0) {
+                            // Valentina usa seu poder especial para reviver o personagem
+                            currentCharacter.specialPower(selectedCharacter);
+                            // Atualiza o texto para mostrar que Valentina reviveu o personagem
+                            texts.setText(currentCharacter.getName() + " revived " + selectedCharacter.getName() + "!");
+                            // Define a saúde do personagem revivido para 100
+                            selectedCharacter.setHealth(100);
+
+                            // Exibe o GIF especial no JLabel e define sua posição
+                            specialGifLabel.setVisible(true);
+
+                            // Remove o GIF especial após um tempo (3 segundos, por exemplo)
+                            Timer timer = new Timer(2000, new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    specialGifLabel.setVisible(false);
+
+                                }
+                            });
+                            timer.setRepeats(false);
+                            timer.start();
+                            action = true;
+                            millis3 = clock.millis();
+                        } else {
+                            texts.setText("There is no dead allies!");
+                        }
+                    } else {
+                        // Se não for Valentina, usa o poder especial contra o vilão
+                        currentCharacter.specialPower(heroes.get(1)); // Assume que a primeira posição é o vilão
+                        // Atualiza o texto para mostrar que o herói usou seu ataque especial no vilão
+                        texts.setText(currentCharacter.getName() + " used special attack on " + heroes.get(1).getName() + "!");
+
+                       specialGifLabel.setVisible(true);
+
+                        // Remove o GIF especial após um tempo (3 segundos)
+                        // Cria um novo timer que executará uma ação após 3000 milissegundos (3 segundos)
+                        Timer timer = new Timer(2000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                // Define o label do GIF especial como invisível quando o timer dispara
+                                specialGifLabel.setVisible(false);
+                            }
+                        });
+
+                        // Define que o timer não deve repetir a ação; ele só será executado uma vez
+                        timer.setRepeats(false);
+                        // Inicia o timer. Após 3 segundos, a ação definida acima será executada
+                        timer.start();
+                        action = true;
+                        millis3 = clock.millis();
+                    }
+                } else if(!action) {
+                    texts.setText("Power charge is at " + currentCharacter.getPowerCharge() + "%!");
+                }
+            }
+        });
+
+        // Botão de troca
         buttons.get(3).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(!action) {
-                    currentHero++;
-                    System.out.println(currentHero);
+                    // Cria um PopUp para selecionar um personagem para troca
+                    PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, false);
+                    popUp.setVisible(true); // Exibe o diálogo modal
+                    // Obtém o personagem selecionado no PopUp
+                    Character selectedCharacter = popUp.getSelectedCharacter();
+                    // Se um personagem foi selecionado
+                    if (selectedCharacter != null) {
+                        // Atualiza o índice do herói atual para o personagem selecionado
+                        currentHero = heroes.indexOf(selectedCharacter);
+                        // Atualiza as imagens e outras representações gráficas conforme necessário
+                        repaint(); // Redesenha a tela após a troca de personagem
+                        // Atualiza o texto para mostrar que o herói atual foi trocado
+                        texts.setText("Swapped to " + selectedCharacter.getName() + "!");
+                    }
+
                     action = true;
+                    millis3 = clock.millis();
                 }
             }
         });
@@ -249,6 +356,12 @@ public class MainFrame extends JFrame implements Runnable {
                 enemyDefense.draw(g);
             }
         };
+
+        // Cria um JLabel para exibir o GIF especial
+        specialGifLabel = new JLabel();
+        specialGifLabel.setVisible(false); // Inicialmente invisível
+        pane.add(specialGifLabel); // Adiciona o JLabel ao pane
+        pane.setLayout(null); // Usamos layout nulo para posicionar componentes manualmente
 
         //O JSplitPane cria um Pane a partir de dois -> Armazena o JPane dos botões e o JPane das imagens
         JSplitPane division = new JSplitPane();
@@ -312,8 +425,13 @@ public class MainFrame extends JFrame implements Runnable {
                     (this.getClass().getResource(defenseBar(heroes.get(currentHero))))));
             enemyDefense.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(defenseBar(heroes.get(1))))));
-            heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull
-                    (this.getClass().getResource("img/" + heroes.get(currentHero).getName() + ".gif"))));
+            if (specialGifLabel.isVisible()) {
+                heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull(
+                        getClass().getResource("img/" + heroes.get(currentHero).getName() + "_Poder.gif"))));
+            } else {
+                heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull(
+                        getClass().getResource("img/" + heroes.get(currentHero).getName() + ".gif"))));
+            }
 
             //A cada 200ms, atualiza as animações
             millis1 = clock.millis();
