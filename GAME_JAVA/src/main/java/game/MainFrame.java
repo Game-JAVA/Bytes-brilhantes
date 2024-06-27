@@ -195,6 +195,7 @@ public class MainFrame extends JFrame implements Runnable {
 
         // Ação de cada botão
 
+
         // Botão de ataque
         buttons.get(0).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -250,10 +251,7 @@ public class MainFrame extends JFrame implements Runnable {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 specialGifLabel.setVisible(false);
-                                // Mostra novamente o GIF do herói atual após o término do especial
-                                heroes.get(currentHero).setImg(new ImageIcon(getClass().getResource("img/" + heroes.get(currentHero).getName() + ".gif")));
-                                // Redesenha a tela para atualizar a imagem do herói
-                                repaint();
+
                             }
                         });
                         timer.setRepeats(false);
@@ -277,23 +275,24 @@ public class MainFrame extends JFrame implements Runnable {
                     specialGifLabel.setVisible(true);
 
                     // Remove o GIF especial após um tempo (3 segundos)
+                    // Cria um novo timer que executará uma ação após 3000 milissegundos (3 segundos)
                     Timer timer = new Timer(3000, new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
+                            // Define o label do GIF especial como invisível quando o timer dispara
                             specialGifLabel.setVisible(false);
-                            // Mostra novamente o GIF do herói atual após o término do especial
-                            heroes.get(currentHero).setImg(new ImageIcon(getClass().getResource("img/" + heroes.get(currentHero).getName() + ".gif")));
-                            // Redesenha a tela para atualizar a imagem do herói
-                            repaint();
                         }
                     });
+
+                    // Define que o timer não deve repetir a ação; ele só será executado uma vez
                     timer.setRepeats(false);
+
+                    // Inicia o timer. Após 3 segundos, a ação definida acima será executada
                     timer.start();
+
                 }
             }
         });
-
-
 
         // Botão de troca
         buttons.get(3).addActionListener(new ActionListener() {
@@ -348,12 +347,14 @@ public class MainFrame extends JFrame implements Runnable {
         // O componente de baixo vai ser o painel de botões
         division.setBottomComponent(bottomDivision);
 
+
         // Adiciona a divisão ao JFrame atual
         add(division);
         // Abre em tela cheia
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         // Abre a tela
         setVisible(true);
+
 
         // Entra num while infinito que vai atualizar as imagens a cada 200ms através da função "updateUI() de division"
         // Deixa os gifs animados
@@ -363,8 +364,14 @@ public class MainFrame extends JFrame implements Runnable {
                     (this.getClass().getResource(hpBar(heroes.get(currentHero))))));
             enemyHealth.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(hpBar(heroes.get(1))))));
-            heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull
-                    (this.getClass().getResource("img/" + heroes.get(currentHero).getName() + ".gif"))));
+
+            if (specialGifLabel.isVisible()) {
+                heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull(
+                        getClass().getResource("img/" + heroes.get(currentHero).getName() + "_Poder.gif"))));
+            } else {
+                heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull(
+                        getClass().getResource("img/" + heroes.get(currentHero).getName() + ".gif"))));
+            }
 
             millis1 = clock.millis();
 
