@@ -2,10 +2,7 @@ package game;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyAdapter;
+import java.awt.event.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.*;
@@ -144,9 +141,9 @@ public class MainFrame extends JFrame implements Runnable {
     }
 
     private String defenseBar(Character c) {
-        if(c.getDefense() >= 20) {
+        if(c.getDefense() >= 15) {
             return "img/Defense/2.png";
-        } else if(c.getDefense() >= 10) {
+        } else if(c.getDefense() >= 10 && c.getDefense() > 0) {
             return "img/Defense/2-1.png";
         } else {
             return "img/Defense/2-2.png";
@@ -169,7 +166,7 @@ public class MainFrame extends JFrame implements Runnable {
         heroes.add(new Bruno(100, 6, 5, 50, "Bruno",
                 "img/Bruno.gif", 50, 200, "sound/hit.wav"));
         //Vilão
-        heroes.add(new Faria(100, 10, 5, 20, "Faria",
+        heroes.add(new Faria(100, 10, 0, 20, "Faria",
                 "img/Faria.gif", 1000, 50, "sound/hit.wav"));
         heroes.add(new Leticia(100, 20, 6, 15, "Leticia",
                 "img/Leticia.gif", 50, 200, "sound/hit.wav"));
@@ -277,8 +274,18 @@ public class MainFrame extends JFrame implements Runnable {
         };
         victoryPane.setVisible(true);
 
+        //Painel que contém a tela de derrota
+        Image defeat = new Image("img/Tela de Derrota.gif", 0, 0);
+        JPanel defeatPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                defeat.draw(g);
+            }
+        };
+        defeatPane.setVisible(true);
+
         //Painel que contém o gif de transição
-        Image transition = new Image("img/transition2.gif", 0, 0);
+        Image transition = new Image("img/Transition.gif", 0, 0);
         JPanel transitionPane = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -342,6 +349,7 @@ public class MainFrame extends JFrame implements Runnable {
                 remove(division);
                 add(transitionPane);
 
+                //Transição de nível, que dura 1500ms (300 iterações * 5ms)
                 for(int i = 0; i < 300; i++) {
                     transitionPane.updateUI();
                     try {
@@ -354,6 +362,7 @@ public class MainFrame extends JFrame implements Runnable {
                 remove(transitionPane);
                 add(division);
 
+                //Muda o background de acordo com o nível atual
                 switch (levels) {
                     case 0:
                         backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
@@ -370,6 +379,11 @@ public class MainFrame extends JFrame implements Runnable {
                                 getResource("img/BackgroundBoss.png"))));
                         break;
 
+                    case 3:
+                        remove(division);
+                        add(victoryPane);
+                        break;
+
                     default:
                         break;
                 }
@@ -377,6 +391,18 @@ public class MainFrame extends JFrame implements Runnable {
                 levels++;
                 heroes.get(1).setHealth(100);
                 texts.setText("Level passed!");
+            }
+
+            //Caso todos os heróis tenham morrido, aparece a tela de derrota
+            int deads = 0;
+            for(Character hero : heroes){
+                if(hero.getHealth() < 0){
+                    deads++;
+                }
+            }
+            if(deads == 4){
+                remove(division);
+                add(defeatPane);
             }
 
             // Unidade de tempo da animação
