@@ -139,6 +139,7 @@ public class MainFrame extends JFrame implements Runnable {
             return "img/Health/1.png";
         } else {
             return "img/Health/0.png";
+
         }
     }
 
@@ -165,23 +166,24 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Array onde os heróis são instanciados
         ArrayList<game.Character> heroes = new ArrayList<>();
-        heroes.add(new Bruno(100, 10, 5, 50, "Bruno",
-                "img/Bruno.gif", 50, 200, "sound/hit.wav"));
-        heroes.add(new Faria(100, 20, 0, 20, "Faria",
+        heroes.add(new Faria(100, 20, 10, 20, "Faria",
                 "img/Faria.gif", 50, 200, "sound/hit.wav"));
+        heroes.add(new Bruno(100, 12, 5, 40, "Bruno",
+                "img/Bruno.gif", 50, 200, "sound/hit.wav"));
         heroes.add(new Leticia(100, 20, 6, 15, "Leticia",
                 "img/Leticia.gif", 50, 200, "sound/hit.wav"));
-        heroes.add(new Valentina(100, 15, 10, 10, "Valentina",
+        heroes.add(new Valentina(100, 15, 5, 10, "Valentina",
                 "img/Valentina.gif", 50, 200, "sound/hit.wav"));
 
         //Vilão
-        ArrayList<game.Character> enemys = new ArrayList<>();
-        enemys.add(new Enemy(100, 15, 10, 30, "Vilão1",
-                "img/enemy1.gif", 1000, 50, "sound/hit.wav"));
-        enemys.add(new Enemy(100, 20, 20, 30, "Vilão2",
-                "img/enemy2.gif", 1000, 50, "sound/hit.wav"));
-        enemys.add(new Enemy(100, 25, 25, 30, "Vilão3",
-                "img/enemy3.gif", 1000, 50, "sound/hit.wav"));
+        ArrayList<game.Character> enemies = new ArrayList<>();
+        enemies.add(new Enemy(100, 15, 10, 30, "Vilão1",
+                "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
+        enemies.add(new Enemy(100, 20, 10, 30, "Vilão2",
+                "img/Inimigo2.gif", 1000, 50, "sound/hit.wav"));
+        enemies.add(new Enemy(100, 25, 10, 30, "Vilão3",
+                "img/Inimigo3.gif", 1000, 50, "sound/hit.wav"));
+
 
         //Painel dos botões
         JPanel buttonsPanel = new JPanel();
@@ -221,8 +223,8 @@ public class MainFrame extends JFrame implements Runnable {
         buttons.get(0).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(!action) {
-                    // Executa o ataque do herói atual (currentHero) contra o vilão (heroes.get(1))
-                    String attack = heroes.get(currentHero).attack(heroes.get(1));
+                    // Executa o ataque do herói atual (currentHero) contra o vilão
+                    String attack = heroes.get(currentHero).attack(enemies.get(currentEnemy));
                     // Atualiza o texto para mostrar o ataque realizado e o dano causado
                     texts.setText(attack);
                     action = true;
@@ -290,9 +292,9 @@ public class MainFrame extends JFrame implements Runnable {
                         }
                     } else {
                         // Se não for Valentina, usa o poder especial contra o vilão
-                        currentCharacter.specialPower(heroes.get(1)); // Assume que a primeira posição é o vilão
+                        currentCharacter.specialPower(enemies.get(currentEnemy)); // Assume que a primeira posição é o vilão
                         // Atualiza o texto para mostrar que o herói usou seu ataque especial no vilão
-                        texts.setText(currentCharacter.getName() + " used special attack on " + heroes.get(1).getName() + "!");
+                        texts.setText(currentCharacter.getName() + " used special attack on " + enemies.get(currentEnemy).getName() + "!");
 
                         specialGifLabel.setVisible(true);
 
@@ -338,6 +340,7 @@ public class MainFrame extends JFrame implements Runnable {
                         texts.setText("Swapped to " + selectedCharacter.getName() + "!");
                     }
 
+
                     action = true;
                     millis3 = clock.millis();
                 }
@@ -359,12 +362,10 @@ public class MainFrame extends JFrame implements Runnable {
                 backgroundImage.draw(g);
 
                 heroes.get(currentHero).draw(g);
-                heroes.get(1).draw(g);
                 heroHealth.draw(g);
                 heroDefense.draw(g);
 
-                enemys.get(currentEnemy).draw(g);
-                enemys.get(1).draw(g);
+                enemies.get(currentEnemy).draw(g);
                 enemyHealth.draw(g);
                 enemyDefense.draw(g);
             }
@@ -411,7 +412,7 @@ public class MainFrame extends JFrame implements Runnable {
         defeatPane.setVisible(true);
 
         //Painel que contém o gif de transição
-        Image transition = new Image("img/Transition.gif", 0, 0);
+        Image transition = new Image("img/transition.gif", 0, 0);
         JPanel transitionPane = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -433,11 +434,11 @@ public class MainFrame extends JFrame implements Runnable {
             heroHealth.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(hpBar(heroes.get(currentHero))))));
             enemyHealth.setImg(new ImageIcon(Objects.requireNonNull
-                    (this.getClass().getResource(hpBar(heroes.get(1))))));
+                    (this.getClass().getResource(hpBar(enemies.get(currentEnemy))))));
             heroDefense.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(defenseBar(heroes.get(currentHero))))));
             enemyDefense.setImg(new ImageIcon(Objects.requireNonNull
-                    (this.getClass().getResource(defenseBar(heroes.get(1))))));
+                    (this.getClass().getResource(defenseBar(enemies.get(currentEnemy))))));
             if (specialGifLabel.isVisible()) {
                 heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull(
                         getClass().getResource("img/" + heroes.get(currentHero).getName() + "_Poder.gif"))));
@@ -456,27 +457,32 @@ public class MainFrame extends JFrame implements Runnable {
 
             //Caso uma ação aconteça (botão seja pressionado), passa o round pro inimigo
             if(action && (millis1 - millis3) > 2000) {
-                if(heroes.get(1).getPowerCharge() >= 100 && heroes.get(1).getImprisioned() == 0)
-                    heroes.get(1).specialPower(heroes.get(currentHero));
+                if(enemies.get(currentEnemy).getPowerCharge() >= 100 && enemies.get(currentEnemy).getImprisioned() == 0)
+                    enemies.get(currentEnemy).specialPower(heroes.get(currentHero));
+
                 else {
                     int decision = r.nextInt(0,4);
                     switch(decision) {
                         case 3:
-                            String defense = heroes.get(1).defend();
+                            String defense = enemies.get(currentEnemy).defend();
                             texts.setText(defense);
                             break;
 
                         default:
-                            String attack = heroes.get(1).attack(heroes.get(currentHero));
+                            String attack = enemies.get(currentEnemy).attack(heroes.get(currentHero));
                             texts.setText(attack);
                     }
                 }
 
                 action = false;
-            }
 
+            }
+            if (heroes.get(currentHero).getHealth() <=0) {
+                currentHero++;
+            }
+            
             //Se zerar a vida do inimigo, reinicia o nível
-            if(heroes.get(1).getHealth() <= 0) {
+            if(enemies.get(currentEnemy).getHealth() <= 0) {
                 remove(division);
                 add(transitionPane);
 
@@ -519,8 +525,9 @@ public class MainFrame extends JFrame implements Runnable {
                         break;
                 }
 
+
                 levels++;
-                heroes.get(1).setHealth(100);
+                currentEnemy++;
                 texts.setText("Level passed!");
             }
 
