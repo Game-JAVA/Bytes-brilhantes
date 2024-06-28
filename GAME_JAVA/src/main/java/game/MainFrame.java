@@ -374,9 +374,6 @@ public class MainFrame extends JFrame implements Runnable {
         //O componente de baixo vai ser o painel de botões
         division.setBottomComponent(bottomDivision);
 
-        //Adiciona a divisão ao JFrame atual
-        add(division);
-
         //Painel que contém a tela de vitória
         Image victory = new Image("img/Tela de Vitória.gif", 0, 0);
         JPanel victoryPane = new JPanel() {
@@ -406,6 +403,38 @@ public class MainFrame extends JFrame implements Runnable {
             }
         };
         transitionPane.setVisible(true);
+
+        //Painel que contém o menu
+        Image menu = new Image("img/Menu.png", 0, 0);
+        JPanel menuPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                menu.draw(g);
+            }
+        };
+        //Detecta um clique no mouse no range entre X e Y do if
+        menuPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+                System.out.println(x + ", " + y);
+
+                //Caso clique no botão de start, troca para a tela de combate
+                if(x >= 370 && x <= 530 && y >= 530 && y <= 590){
+                    remove(menuPane);
+                    add(division);
+
+                    //Fecha e abre a tela para atualizar
+                    setVisible(false);
+                    setVisible(true);
+                }
+            }
+        });
+        menuPane.setVisible(true);
+
+        //Adiciona a tela de menu ao JFrame atual (tela atual)
+        add(menuPane);
 
         //Abre em tela cheia
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -438,6 +467,7 @@ public class MainFrame extends JFrame implements Runnable {
             if ((millis1 - millis2) > 200) {
                 division.updateUI();
                 victoryPane.updateUI();
+                menuPane.updateUI();
                 millis2 = millis1;
             }
 
