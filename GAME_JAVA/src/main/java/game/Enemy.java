@@ -5,27 +5,23 @@ import java.util.Random;
 
 public class Enemy extends Character {
     private boolean intangible; // Flag para indicar se o vilão está intangível
-    private int roundsSinceSpecial; // Contador de rodadas desde a última vez que usou o poder especial
+    private boolean specialDefense; // Flag para indicar se a defesa especial está ativa
 
     public Enemy(int health, int attack, int defense, int powerLoad, String name, String url, int position_x, int position_y, String sound) {
         super(health, attack, defense, powerLoad, name, url, position_x, position_y, sound);
         this.intangible = false;
-        this.roundsSinceSpecial = 0;
+        this.specialDefense = false;
     }
 
     JLabel texts = new JLabel();
 
     @Override
     public void specialPower(Character c) {
-        // Ativa a habilidade especial do vilão se não estiver intangível e se passaram pelo menos 3 rodadas desde a última vez
-        if (!intangible && roundsSinceSpecial >= 3) {
-            this.intangible = true;
-            texts.setText("Enemy is now immune to damage for this round.");
-            this.setPowerCharge(0);
-            roundsSinceSpecial = 0; // Reinicia o contador de rodadas desde o último uso do poder especial
-        } else {
-            texts.setText("Enemy's special power is on cooldown.");
-        }
+        // Ativa a habilidade especial do vilão
+        this.intangible = true;
+        this.specialDefense = true;
+        texts.setText("Enemy used special power and is now immune to damage for this round.");
+        this.setPowerCharge(0);
     }
 
     @Override
@@ -62,21 +58,28 @@ public class Enemy extends Character {
         return damage;
     }
 
-    public void takeAction() {
-        Random random = new Random();
-        int action = random.nextInt(2); // Gera um número entre 0 e 1 (0 para ataque, 1 para especial)
+    public void takeAction(Character hero) {
+        increasePowerCharge();
 
-        if (roundsSinceSpecial >= 3 && action == 1) {
-            specialPower(null);
+        if (this.getPowerCharge() >= 100) {
+            specialPower(hero);
         } else {
-            attack(null);
+            Random random = new Random();
+            int action = random.nextInt(2); // Gera um número entre 0 e 1 (0 para ataque, 1 para especial)
+            if (action == 1 && !specialDefense) {
+                specialPower(hero);
+            } else {
+                attack(hero);
+            }
         }
 
         if (intangible) {
-            roundsSinceSpecial++;
-            intangible = false; // Reset intangibility after one round
-        } else {
-            roundsSinceSpecial++;
+            intangible = false; // Reseta a invencibilidade depois do uso.
+        }
+
+        if (specialDefense) {
+            this.setDefense(99); // Defesa no máximo por um round
+            specialDefense = false; // Após esse round a defesa volta ao normal
         }
     }
 }
