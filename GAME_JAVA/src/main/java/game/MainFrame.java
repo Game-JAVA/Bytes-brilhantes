@@ -177,11 +177,11 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Vilão
         ArrayList<game.Character> enemies = new ArrayList<>();
-        enemies.add(new Enemy(100, 15, 10, 30, "Vilão1",
+        enemies.add(new Enemy(100, 12, 10, 30, "Vilão1",
                 "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 20, 10, 30, "Vilão2",
+        enemies.add(new Enemy(100, 14, 10, 30, "Vilão2",
                 "img/Inimigo2.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 25, 10, 30, "Vilão3",
+        enemies.add(new Enemy(100, 16, 10, 30, "Vilão3",
                 "img/Inimigo3.gif", 1000, 50, "sound/hit.wav"));
 
 
