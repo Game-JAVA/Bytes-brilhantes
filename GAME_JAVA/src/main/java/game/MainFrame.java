@@ -340,7 +340,6 @@ public class MainFrame extends JFrame implements Runnable {
                         texts.setText("Swapped to " + selectedCharacter.getName() + "!");
                     }
 
-
                     action = true;
                     millis3 = clock.millis();
                 }
@@ -478,9 +477,12 @@ public class MainFrame extends JFrame implements Runnable {
 
             }
             if (heroes.get(currentHero).getHealth() <=0) {
+                texts.setText("Hero: " + heroes.get(currentHero).getName() +" is dead!");
                 currentHero++;
+
+
             }
-            
+
             //Se zerar a vida do inimigo, reinicia o nível
             if(enemies.get(currentEnemy).getHealth() <= 0) {
                 remove(division);
