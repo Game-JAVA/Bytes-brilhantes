@@ -480,7 +480,6 @@ public class MainFrame extends JFrame implements Runnable {
                 texts.setText("Hero: " + heroes.get(currentHero).getName() +" is dead!");
                 currentHero++;
 
-
             }
 
             //Se zerar a vida do inimigo, reinicia o nível
