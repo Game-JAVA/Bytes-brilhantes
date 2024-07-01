@@ -418,21 +418,45 @@ public class MainFrame extends JFrame implements Runnable {
             public void mouseClicked(MouseEvent e) {
                 int x = e.getX();
                 int y = e.getY();
-                System.out.println(x + ", " + y);
 
-                //Caso clique no botão de start, troca para a tela de combate
-                if(x >= 370 && x <= 530 && y >= 530 && y <= 590){
-                    remove(menuPane);
-                    add(division);
+                if(y >= 530 && y <= 590) {
+                    //Caso clique no botão de start, troca para a tela de combate
+                    if(x >= 370 && x <= 530){
+                        remove(menuPane);
+                        add(division);
 
-                    //Fecha e abre a tela para atualizar
-                    setVisible(false);
-                    setVisible(true);
+                        menuPane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+
+                        //Fecha e abre a tela para atualizar
+                        setVisible(false);
+                        setVisible(true);
+                    } else if(x >= 730 && x <= 890) { //Se clicar no botão de sair, fecha a tela e encerra o programa
+                        setVisible(false);
+                        System.exit(0);
+                    }
+                }
+
+            }
+        });
+        //Hover do mouse ao passar em cima dos botões
+        menuPane.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+
+                if(((x >= 370 && x <= 530) || (x >= 560 && x <= 710) || (x >= 730 && x <= 890)) && (y >= 530 && y <= 590)){
+                    menuPane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+                } else {
+                    menuPane.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }
             }
         });
         menuPane.setVisible(true);
-
         //Adiciona a tela de menu ao JFrame atual (tela atual)
         add(menuPane);
 
@@ -443,7 +467,7 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Entra num while infinito que vai atualizar as imagens a cada 200ms através da função "updateUI() de division"
         //Deixa os gifs animados
-        //A lógica de progressão do jogo deve ser implementada aqui - Provavelmente
+        //A lógica de progressão do jogo deve ser implementada aqui
         while (true) {
             //Atualiza as imagens das barras de vida e do herói atual
             heroHealth.setImg(new ImageIcon(Objects.requireNonNull
