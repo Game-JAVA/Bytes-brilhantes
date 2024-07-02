@@ -13,7 +13,7 @@ import java.util.Random;
 public class MainFrame extends JFrame implements Runnable {
     private boolean isPaused = false, action = false;
     private PauseOverlay pauseOverlay;
-    private int currentHero = 0, levels = -2;
+    private int currentHero = 0, levels = -2, currentEnemy = 0;
     private Clock clock = Clock.systemDefaultZone();
     private long millis1 = clock.millis(), millis2 = millis1;
     private Font retroFont;
@@ -166,13 +166,21 @@ public class MainFrame extends JFrame implements Runnable {
         ArrayList<game.Character> heroes = new ArrayList<>();
         heroes.add(new Bruno(100, 6, 5, 50, "Bruno",
                 "img/Bruno.gif", 50, 200, "sound/hit.wav"));
-        //Vilão
         heroes.add(new Faria(100, 10, 0, 20, "Faria",
-                "img/Faria.gif", 1000, 50, "sound/hit.wav"));
+                "img/Faria.gif", 50, 200, "sound/hit.wav"));
         heroes.add(new Leticia(100, 20, 6, 15, "Leticia",
                 "img/Leticia.gif", 50, 200, "sound/hit.wav"));
         heroes.add(new Valentina(100, 15, 10, 10, "Valentina",
                 "img/Valentina.gif", 50, 200, "sound/hit.wav"));
+
+        //Array onde os vilões são instanciados
+        ArrayList<game.Character> enemies = new ArrayList<>();
+        enemies.add(new Enemy(100, 12, 0, 30, "Vilão1",
+                "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
+        enemies.add(new Enemy(100, 14, 0, 30, "Vilão2",
+                "img/Inimigo2.gif", 1000, 50, "sound/hit.wav"));
+        enemies.add(new Enemy(100, 16, 0, 30, "Vilão3",
+                "img/Inimigo3.gif", 1000, 50, "sound/hit.wav"));
 
         //Painel dos botões
         JPanel buttonsPanel = new JPanel();
@@ -213,7 +221,7 @@ public class MainFrame extends JFrame implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 if(!action) {
                     // Executa o ataque do herói atual (currentHero) contra o vilão (heroes.get(1))
-                    String attack = heroes.get(currentHero).attack(heroes.get(1));
+                    String attack = heroes.get(currentHero).attack(enemies.get(currentEnemy));
                     // Atualiza o texto para mostrar o ataque realizado e o dano causado
                     texts.setText(attack);
                     action = true;
@@ -281,9 +289,10 @@ public class MainFrame extends JFrame implements Runnable {
                         }
                     } else {
                         // Se não for Valentina, usa o poder especial contra o vilão
-                        currentCharacter.specialPower(heroes.get(1)); // Assume que a primeira posição é o vilão
+                        currentCharacter.specialPower(enemies.get(currentEnemy)); // Assume que a primeira posição é o vilão
                         // Atualiza o texto para mostrar que o herói usou seu ataque especial no vilão
-                        texts.setText(currentCharacter.getName() + " used special attack on " + heroes.get(1).getName() + "!");
+                        texts.setText(currentCharacter.getName() + " used special attack on " +
+                                enemies.get(currentEnemy).getName() + "!");
 
                        specialGifLabel.setVisible(true);
 
@@ -348,11 +357,13 @@ public class MainFrame extends JFrame implements Runnable {
             @Override
             protected void paintComponent(Graphics g) {
                 backgroundImage.draw(g);
+
                 heroes.get(currentHero).draw(g);
-                heroes.get(1).draw(g);
                 heroHealth.draw(g);
-                enemyHealth.draw(g);
                 heroDefense.draw(g);
+
+                enemies.get(currentEnemy).draw(g);
+                enemyHealth.draw(g);
                 enemyDefense.draw(g);
             }
         };
@@ -531,11 +542,11 @@ public class MainFrame extends JFrame implements Runnable {
             heroHealth.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(hpBar(heroes.get(currentHero))))));
             enemyHealth.setImg(new ImageIcon(Objects.requireNonNull
-                    (this.getClass().getResource(hpBar(heroes.get(1))))));
+                    (this.getClass().getResource(hpBar(enemies.get(currentEnemy))))));
             heroDefense.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(defenseBar(heroes.get(currentHero))))));
             enemyDefense.setImg(new ImageIcon(Objects.requireNonNull
-                    (this.getClass().getResource(defenseBar(heroes.get(1))))));
+                    (this.getClass().getResource(defenseBar(enemies.get(currentEnemy))))));
             if (specialGifLabel.isVisible()) {
                 heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull(
                         getClass().getResource("img/" + heroes.get(currentHero).getName() + "_Poder.gif"))));
@@ -544,29 +555,33 @@ public class MainFrame extends JFrame implements Runnable {
                         getClass().getResource("img/" + heroes.get(currentHero).getName() + ".gif"))));
             }
 
+            millis1 = clock.millis();
             //Caso uma ação aconteça (botão seja pressionado), passa o round pro inimigo
             if(action && (millis1 - millis2) > 2000) {
-                if(heroes.get(1).getPowerCharge() >= 100 && heroes.get(1).getImprisioned() == 0)
-                    heroes.get(1).specialPower(heroes.get(currentHero));
-                else {
-                    int decision = r.nextInt(0,4);
-                    switch(decision) {
-                        case 3:
-                            String defense = heroes.get(1).defend();
-                            texts.setText(defense);
-                            break;
+                int decision = r.nextInt(0,4);
+                switch(decision) {
+                    case 3:
+                        String defense = enemies.get(currentEnemy).defend();
+                        texts.setText(defense);
+                        break;
 
-                        default:
-                            String attack = heroes.get(1).attack(heroes.get(currentHero));
-                            texts.setText(attack);
+                    default:
+                        String attack = enemies.get(currentEnemy).attack(heroes.get(currentHero));
+                        texts.setText(attack);
                     }
-                }
 
                 action = false;
             }
 
+            if (heroes.get(currentHero).getHealth() <=0) {
+                texts.setText("Hero: " + heroes.get(currentHero).getName() +" is dead!");
+                currentHero++;
+            }
+
             //Se zerar a vida do inimigo, reinicia o nível
-            if(heroes.get(1).getHealth() <= 0 || isAncestorOf(transitionPane)) {
+            if(enemies.get(currentEnemy).getHealth() <= 0 || isAncestorOf(transitionPane)) {
+                if(isAncestorOf(division) && currentEnemy < 2)
+                    currentEnemy++;
 
                 if(levels < 3) {
                     remove(division);
@@ -617,7 +632,6 @@ public class MainFrame extends JFrame implements Runnable {
                 }
 
                 levels++;
-                heroes.get(1).setHealth(100);
                 texts.setText("Level passed!");
             }
 
