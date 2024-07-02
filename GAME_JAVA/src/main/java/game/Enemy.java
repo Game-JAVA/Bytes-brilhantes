@@ -1,8 +1,5 @@
 package game;
 
-import javax.swing.JLabel;
-import java.util.Random;
-
 public class Enemy extends Character {
     private boolean specialDefense; // Flag para indicar se a defesa especial está ativa
 
@@ -17,4 +14,4 @@ public class Enemy extends Character {
         this.specialDefense = true;
         this.setPowerCharge(0);
     }
-    }
+}

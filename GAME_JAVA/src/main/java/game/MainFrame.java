@@ -13,10 +13,9 @@ import java.util.Random;
 public class MainFrame extends JFrame implements Runnable {
     private boolean isPaused = false, action = false;
     private PauseOverlay pauseOverlay;
-    private int currentHero = 0, levels = 0;
-    private int currentEnemy = 0;
+    private int currentHero = 0, levels = -2, currentEnemy = 0;
     private Clock clock = Clock.systemDefaultZone();
-    private long millis1 = clock.millis(), millis2 = millis1, millis3 = millis1;
+    private long millis1 = clock.millis(), millis2 = millis1;
     private Font retroFont;
     private Random r = new Random();
     private JLabel specialGifLabel; // Novo JLabel para exibir o GIF especial
@@ -139,7 +138,6 @@ public class MainFrame extends JFrame implements Runnable {
             return "img/Health/1.png";
         } else {
             return "img/Health/0.png";
-
         }
     }
 
@@ -166,24 +164,23 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Array onde os heróis são instanciados
         ArrayList<game.Character> heroes = new ArrayList<>();
-        heroes.add(new Faria(100, 20, 10, 20, "Faria",
-                "img/Faria.gif", 50, 200, "sound/hit.wav"));
-        heroes.add(new Bruno(100, 12, 5, 40, "Bruno",
+        heroes.add(new Bruno(100, 6, 5, 50, "Bruno",
                 "img/Bruno.gif", 50, 200, "sound/hit.wav"));
+        heroes.add(new Faria(100, 10, 0, 20, "Faria",
+                "img/Faria.gif", 50, 200, "sound/hit.wav"));
         heroes.add(new Leticia(100, 20, 6, 15, "Leticia",
                 "img/Leticia.gif", 50, 200, "sound/hit.wav"));
-        heroes.add(new Valentina(100, 15, 5, 10, "Valentina",
+        heroes.add(new Valentina(100, 15, 10, 10, "Valentina",
                 "img/Valentina.gif", 50, 200, "sound/hit.wav"));
 
-        //Vilão
+        //Array onde os vilões são instanciados
         ArrayList<game.Character> enemies = new ArrayList<>();
-        enemies.add(new Enemy(100, 12, 10, 30, "Vilão1",
+        enemies.add(new Enemy(100, 12, 0, 30, "Vilão1",
                 "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 14, 10, 30, "Vilão2",
+        enemies.add(new Enemy(100, 14, 0, 30, "Vilão2",
                 "img/Inimigo2.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 16, 10, 30, "Vilão3",
+        enemies.add(new Enemy(100, 16, 0, 30, "Vilão3",
                 "img/Inimigo3.gif", 1000, 50, "sound/hit.wav"));
-
 
         //Painel dos botões
         JPanel buttonsPanel = new JPanel();
@@ -223,12 +220,12 @@ public class MainFrame extends JFrame implements Runnable {
         buttons.get(0).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(!action) {
-                    // Executa o ataque do herói atual (currentHero) contra o vilão
+                    // Executa o ataque do herói atual (currentHero) contra o vilão (heroes.get(1))
                     String attack = heroes.get(currentHero).attack(enemies.get(currentEnemy));
                     // Atualiza o texto para mostrar o ataque realizado e o dano causado
                     texts.setText(attack);
                     action = true;
-                    millis3 = clock.millis();
+                    millis2 = clock.millis();
                 }
             }
         });
@@ -242,7 +239,7 @@ public class MainFrame extends JFrame implements Runnable {
                     // Atualiza o texto para mostrar que o herói atual defendeu contra o vilão
                     texts.setText(defense);
                     action = true;
-                    millis3 = clock.millis();
+                    millis2 = clock.millis();
                 }
             }
         });
@@ -286,7 +283,7 @@ public class MainFrame extends JFrame implements Runnable {
                             timer.setRepeats(false);
                             timer.start();
                             action = true;
-                            millis3 = clock.millis();
+                            millis2 = clock.millis();
                         } else {
                             texts.setText("There is no dead allies!");
                         }
@@ -294,9 +291,10 @@ public class MainFrame extends JFrame implements Runnable {
                         // Se não for Valentina, usa o poder especial contra o vilão
                         currentCharacter.specialPower(enemies.get(currentEnemy)); // Assume que a primeira posição é o vilão
                         // Atualiza o texto para mostrar que o herói usou seu ataque especial no vilão
-                        texts.setText(currentCharacter.getName() + " used special attack on " + enemies.get(currentEnemy).getName() + "!");
+                        texts.setText(currentCharacter.getName() + " used special attack on " +
+                                enemies.get(currentEnemy).getName() + "!");
 
-                        specialGifLabel.setVisible(true);
+                       specialGifLabel.setVisible(true);
 
                         // Remove o GIF especial após um tempo (3 segundos)
                         // Cria um novo timer que executará uma ação após 3000 milissegundos (3 segundos)
@@ -313,7 +311,7 @@ public class MainFrame extends JFrame implements Runnable {
                         // Inicia o timer. Após 3 segundos, a ação definida acima será executada
                         timer.start();
                         action = true;
-                        millis3 = clock.millis();
+                        millis2 = clock.millis();
                     }
                 } else if(!action) {
                     texts.setText("Power charge is at " + currentCharacter.getPowerCharge() + "%!");
@@ -341,7 +339,7 @@ public class MainFrame extends JFrame implements Runnable {
                     }
 
                     action = true;
-                    millis3 = clock.millis();
+                    millis2 = clock.millis();
                 }
             }
         });
@@ -387,9 +385,6 @@ public class MainFrame extends JFrame implements Runnable {
         //O componente de baixo vai ser o painel de botões
         division.setBottomComponent(bottomDivision);
 
-        //Adiciona a divisão ao JFrame atual
-        add(division);
-
         //Painel que contém a tela de vitória
         Image victory = new Image("img/Tela de Vitória.gif", 0, 0);
         JPanel victoryPane = new JPanel() {
@@ -411,7 +406,7 @@ public class MainFrame extends JFrame implements Runnable {
         defeatPane.setVisible(true);
 
         //Painel que contém o gif de transição
-        Image transition = new Image("img/transition.gif", 0, 0);
+        Image transition = new Image("img/Transition.gif", 0, 0);
         JPanel transitionPane = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -420,6 +415,105 @@ public class MainFrame extends JFrame implements Runnable {
         };
         transitionPane.setVisible(true);
 
+        //Painel que contém as instruções do jogo
+        Image instructions = new Image("img/Instructions.gif", 0, 0);
+        JPanel instructionsPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                instructions.draw(g);
+            }
+        };
+        instructionsPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+
+                if(x >= 1090 && x <= 1220 && y >= 570 && y <= 630) {
+                    remove(instructionsPane);
+                    add(transitionPane);
+
+                    //Fecha e abre a tela para atualizar
+                    setVisible(false);
+                    setVisible(true);
+                }
+            }
+        });
+        instructionsPane.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+
+                if(x >= 1090 && x <= 1220 && y >= 570 && y <= 630){
+                    instructionsPane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+                } else {
+                    instructionsPane.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
+        instructionsPane.setVisible(true);
+
+        //Painel que contém o menu
+        Image menu = new Image("img/MenuStart.gif", 0, 0);
+        JPanel menuPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                menu.draw(g);
+            }
+        };
+        //Detecta um clique no mouse no range entre X e Y do if
+        menuPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+
+                if(y >= 530 && y <= 590) {
+                    //Caso clique no botão de start, troca para a tela de combate
+                    if(x >= 370 && x <= 530){
+                        remove(menuPane);
+                        add(instructionsPane);
+
+                        menuPane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+
+                        //Fecha e abre a tela para atualizar
+                        setVisible(false);
+                        setVisible(true);
+                    } else if(x >= 730 && x <= 890) { //Se clicar no botão de sair, fecha a tela e encerra o programa
+                        setVisible(false);
+                        System.exit(0);
+                    }
+                }
+
+            }
+        });
+        //Hover do mouse ao passar em cima dos botões
+        menuPane.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+
+                if(((x >= 370 && x <= 530) || (x >= 560 && x <= 710) || (x >= 730 && x <= 890)) && (y >= 530 && y <= 590)){
+                    menuPane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+                } else {
+                    menuPane.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
+        menuPane.setVisible(true);
+        //Adiciona a tela de menu ao JFrame atual (tela atual)
+        add(menuPane);
+
         //Abre em tela cheia
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         //Abre a tela
@@ -427,8 +521,23 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Entra num while infinito que vai atualizar as imagens a cada 200ms através da função "updateUI() de division"
         //Deixa os gifs animados
-        //A lógica de progressão do jogo deve ser implementada aqui - Provavelmente
+        //A lógica de progressão do jogo deve ser implementada aqui
         while (true) {
+            if(levels == -2) {
+                for(int i = 0; i < 200; i++) {
+                    menuPane.repaint();
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                menu.setImg(new ImageIcon(Objects.requireNonNull
+                        (this.getClass().getResource("img/MenuBlink.gif"))));
+                levels++;
+            }
+
             //Atualiza as imagens das barras de vida e do herói atual
             heroHealth.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(hpBar(heroes.get(currentHero))))));
@@ -446,59 +555,55 @@ public class MainFrame extends JFrame implements Runnable {
                         getClass().getResource("img/" + heroes.get(currentHero).getName() + ".gif"))));
             }
 
-            //A cada 200ms, atualiza as animações
             millis1 = clock.millis();
-            if ((millis1 - millis2) > 200) {
-                division.updateUI();
-                victoryPane.updateUI();
-                millis2 = millis1;
-            }
-
             //Caso uma ação aconteça (botão seja pressionado), passa o round pro inimigo
-            if(action && (millis1 - millis3) > 2000) {
-                if(enemies.get(currentEnemy).getPowerCharge() >= 100 && enemies.get(currentEnemy).getImprisioned() == 0)
-                    enemies.get(currentEnemy).specialPower(heroes.get(currentHero));
+            if(action && (millis1 - millis2) > 2000) {
+                int decision = r.nextInt(0,4);
+                switch(decision) {
+                    case 3:
+                        String defense = enemies.get(currentEnemy).defend();
+                        texts.setText(defense);
+                        break;
 
-                else {
-                    int decision = r.nextInt(0,4);
-                    switch(decision) {
-                        case 3:
-                            String defense = enemies.get(currentEnemy).defend();
-                            texts.setText(defense);
-                            break;
-
-                        default:
-                            String attack = enemies.get(currentEnemy).attack(heroes.get(currentHero));
-                            texts.setText(attack);
+                    default:
+                        String attack = enemies.get(currentEnemy).attack(heroes.get(currentHero));
+                        texts.setText(attack);
                     }
-                }
 
                 action = false;
-
             }
+
             if (heroes.get(currentHero).getHealth() <=0) {
                 texts.setText("Hero: " + heroes.get(currentHero).getName() +" is dead!");
                 currentHero++;
-
             }
 
             //Se zerar a vida do inimigo, reinicia o nível
-            if(enemies.get(currentEnemy).getHealth() <= 0) {
-                remove(division);
-                add(transitionPane);
+            if(enemies.get(currentEnemy).getHealth() <= 0 || isAncestorOf(transitionPane)) {
+                if(isAncestorOf(division) && currentEnemy < 2)
+                    currentEnemy++;
 
-                //Transição de nível, que dura 1500ms (300 iterações * 5ms)
-                for(int i = 0; i < 300; i++) {
-                    transitionPane.updateUI();
-                    try {
-                        Thread.sleep(5);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                if(levels < 3) {
+                    remove(division);
+                    add(transitionPane);
+
+                    //Transição de nível, que dura 1500ms (300 iterações * 5ms)
+                    for(int i = 0; i < 300; i++) {
+                        transitionPane.updateUI();
+                        try {
+                            Thread.sleep(5);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-                }
 
-                remove(transitionPane);
-                add(division);
+                    remove(transitionPane);
+                    add(division);
+
+                    //Fecha e abre a tela para atualizar
+                    setVisible(false);
+                    setVisible(true);
+                }
 
                 //Muda o background de acordo com o nível atual
                 switch (levels) {
@@ -526,9 +631,7 @@ public class MainFrame extends JFrame implements Runnable {
                         break;
                 }
 
-
                 levels++;
-                currentEnemy++;
                 texts.setText("Level passed!");
             }
 
@@ -544,10 +647,17 @@ public class MainFrame extends JFrame implements Runnable {
                 add(defeatPane);
             }
 
+            //Atualiza as animações na tela
+            division.repaint();
+            victoryPane.repaint();
+            menuPane.repaint();
+            instructionsPane.repaint();
+
             // Unidade de tempo da animação
             try {
                 Thread.sleep(5);
             } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
             }
         }
     }

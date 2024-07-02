@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.*;
+import java.awt.image.ImageObserver;
 import java.util.Objects;
 import javax.swing.*;
 
