@@ -10,6 +10,8 @@ public abstract class Character extends Image {
     private int health, attack, mitigation, defense = 0, powerCharge = 0, imprisioned = 0;
     private final int powerLoad;
     private final String name;
+    protected final Sound hitSound = new Sound("sound/hit.wav", false),
+            defenseSound = new Sound("sound/defend.wav", false);
 
     //Construtor
     public Character(int health, int attack, int mitigation, int powerLoad, //Atributos de Image ->
@@ -54,7 +56,7 @@ public abstract class Character extends Image {
         if(this.isDefending())
             this.defense = 0;
 
-        this.sound.play();
+        this.hitSound.play();
 
         return this.getName() + " attacked " + c.getName() + ", dealing " + damage + " damage!";
     }
@@ -75,6 +77,8 @@ public abstract class Character extends Image {
             this.imprisioned--;
             return this.getName() + " is imprisioned!";
         }
+
+        this.defenseSound.play();
 
         return this.getName() + " defended itself by " + this.defense + " points!";
     }

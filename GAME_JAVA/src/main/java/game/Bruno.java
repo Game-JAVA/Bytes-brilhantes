@@ -10,7 +10,6 @@ public class Bruno extends Character {
     public  void specialPower(Character c){
         //Se o poder estiver carregado
         if (this.getPowerCharge() == 100){
-
             //O ataque será multiplicado por 3
             this.setAttack(this.getAttack()*3);
             this.attack(c);
@@ -20,6 +19,7 @@ public class Bruno extends Character {
 
             //E o poder especial voltará a 0
             this.setPowerCharge(0);
+            this.sound.play();
         }
     }
 

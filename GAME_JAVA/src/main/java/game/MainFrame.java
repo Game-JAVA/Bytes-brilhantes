@@ -19,6 +19,13 @@ public class MainFrame extends JFrame implements Runnable {
     private Font retroFont;
     private Random r = new Random();
     private JLabel specialGifLabel; // Novo JLabel para exibir o GIF especial
+    private final Sound click = new Sound("sound/buttonClick.wav", false),
+            start = new Sound("sound/start.wav", false),
+            defeatSound = new Sound("sound/defeat.wav", false),
+            victorySound = new Sound("sound/victory.wav", false),
+            //menu = new Sound("sound/menuSong.wav", true),
+            level = new Sound("sound/level.wav", true),
+            boss = new Sound("sound/boss.wav", true);
 
     public MainFrame() {
         pauseOverlay = new PauseOverlay();
@@ -165,13 +172,13 @@ public class MainFrame extends JFrame implements Runnable {
         //Array onde os heróis são instanciados
         ArrayList<game.Character> heroes = new ArrayList<>();
         heroes.add(new Bruno(100, 6, 5, 50, "Bruno",
-                "img/Bruno.gif", 50, 200, "sound/hit.wav"));
+                "img/Bruno.gif", 50, 200, "sound/bruno_special.wav"));
         heroes.add(new Faria(100, 10, 0, 20, "Faria",
-                "img/Faria.gif", 50, 200, "sound/hit.wav"));
+                "img/Faria.gif", 50, 200, "sound/faria_special.wav"));
         heroes.add(new Leticia(100, 20, 6, 15, "Leticia",
-                "img/Leticia.gif", 50, 200, "sound/hit.wav"));
+                "img/Leticia.gif", 50, 200, "sound/leticia_special.wav"));
         heroes.add(new Valentina(100, 15, 10, 10, "Valentina",
-                "img/Valentina.gif", 50, 200, "sound/hit.wav"));
+                "img/Valentina.gif", 50, 200, "sound/valentina_special.wav"));
 
         //Array onde os vilões são instanciados
         ArrayList<game.Character> enemies = new ArrayList<>();
@@ -340,6 +347,7 @@ public class MainFrame extends JFrame implements Runnable {
 
                     action = true;
                     millis2 = clock.millis();
+                    click.play();
                 }
             }
         });
@@ -410,6 +418,7 @@ public class MainFrame extends JFrame implements Runnable {
                 int y = e.getY();
 
                 if(x >= 1090 && x <= 1220 && y >= 570 && y <= 630) {
+                    start.play();
                     remove(instructionsPane);
                     add(transitionPane);
 
@@ -456,6 +465,7 @@ public class MainFrame extends JFrame implements Runnable {
                 if(y >= 530 && y <= 590) {
                     //Caso clique no botão de start, troca para a tela de combate
                     if(x >= 370 && x <= 530){
+                        start.play();
                         remove(menuPane);
                         add(instructionsPane);
 
@@ -465,6 +475,7 @@ public class MainFrame extends JFrame implements Runnable {
                         setVisible(false);
                         setVisible(true);
                     } else if(x >= 730 && x <= 890) { //Se clicar no botão de sair, fecha a tela e encerra o programa
+                        click.play();
                         setVisible(false);
                         System.exit(0);
                     }
@@ -507,9 +518,9 @@ public class MainFrame extends JFrame implements Runnable {
             public void mouseClicked(MouseEvent e) {
                 int x = e.getX();
                 int y = e.getY();
-                System.out.println(x + ", " + y);
 
                 if(x >= 590 && x <= 710 && y >= 500 && y <= 550) {
+                    click.play();
                     levels = -2;
                     remove(defeatPane);
                     add(menuPane);
@@ -554,6 +565,7 @@ public class MainFrame extends JFrame implements Runnable {
                 int y = e.getY();
 
                 if(x >= 510 && x <= 640 && y >= 510 && y <= 560) {
+                    click.play();
                     levels = -2;
                     remove(victoryPane);
                     add(menuPane);
@@ -651,6 +663,8 @@ public class MainFrame extends JFrame implements Runnable {
                     currentEnemy++;
 
                 if(levels < 2) {
+                    level.setStop(true);
+
                     remove(division);
                     add(transitionPane);
 
@@ -666,9 +680,13 @@ public class MainFrame extends JFrame implements Runnable {
 
                     remove(transitionPane);
                     add(division);
+
+                    level.setStop(false);
+                    level.play();
                 } else {
                     remove(division);
                     add(victoryPane);
+                    victorySound.play();
                 }
 
                 //Fecha e abre a tela para atualizar
@@ -719,6 +737,7 @@ public class MainFrame extends JFrame implements Runnable {
 
                 setVisible(false);
                 setVisible(true);
+                defeatSound.play();
             } else if(heroes.get(currentHero).getHealth() <= 0) {    //Troca automaticamente de herói caso o atual morra
                 texts.setText("Hero: " + heroes.get(currentHero).getName() +" is dead!");
                 currentHero = alive;
