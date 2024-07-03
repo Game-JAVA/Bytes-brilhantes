@@ -26,18 +26,17 @@ public abstract class Character extends Image {
 
     //Métodos
     public String attack(Character c) {
-        int damage;
+        int damage = 0;
 
         //Verifca se o personagem está aprisionado (poder da Letícia)
-        if(imprisioned <= 0){
+        if(this.imprisioned <= 0){
             damage = this.attack - (c.getMitigation() + c.getDefense());
             if(damage < 0)
                 damage = 0;
             //Ao atacar, aumentar a carga do poder do personagem
             increasePowerCharge();
         } else {
-            damage = 0;
-            imprisioned--;
+            this.imprisioned--;
             return this.getName() + " is imprisioned!";
         }
 
@@ -51,6 +50,9 @@ public abstract class Character extends Image {
             //(pois a defesa dura somente uma rodada)
         if(c.isDefending())
             c.setDefense(0);
+        //Mesma verificação para quem está atacando também
+        if(this.isDefending())
+            this.defense = 0;
 
         this.sound.play();
 
@@ -64,13 +66,13 @@ public abstract class Character extends Image {
             this.defense = 0;
 
         //Verifca se o personagem está aprisionado (poder da Letícia)
-        if(imprisioned <= 0){
+        if(this.imprisioned <= 0) {
             this.defense = r.nextInt(10,21);
             //Ao defender, aumentar a carga do poder do personagem
             increasePowerCharge();
         } else {
             this.defense = 0;
-            imprisioned--;
+            this.imprisioned--;
             return this.getName() + " is imprisioned!";
         }
 
