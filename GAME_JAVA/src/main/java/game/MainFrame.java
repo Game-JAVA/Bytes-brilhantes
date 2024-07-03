@@ -175,11 +175,11 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Array onde os vilões são instanciados
         ArrayList<game.Character> enemies = new ArrayList<>();
-        enemies.add(new Enemy(100, 12, 0, 30, "Vilão1",
+        enemies.add(new Enemy(100, 1, 0, 30, "Vilão1",
                 "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 14, 0, 30, "Vilão2",
+        enemies.add(new Enemy(100, 20, 0, 30, "Vilão2",
                 "img/Inimigo2.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 16, 0, 30, "Vilão3",
+        enemies.add(new Enemy(100, 30, 0, 30, "Vilão3",
                 "img/Inimigo3.gif", 1000, 50, "sound/hit.wav"));
 
         //Painel dos botões
@@ -289,7 +289,7 @@ public class MainFrame extends JFrame implements Runnable {
                         }
                     } else {
                         // Se não for Valentina, usa o poder especial contra o vilão
-                        currentCharacter.specialPower(enemies.get(currentEnemy)); // Assume que a primeira posição é o vilão
+                        currentCharacter.specialPower(enemies.get(currentEnemy));
                         // Atualiza o texto para mostrar que o herói usou seu ataque especial no vilão
                         texts.setText(currentCharacter.getName() + " used special attack on " +
                                 enemies.get(currentEnemy).getName() + "!");
@@ -573,11 +573,6 @@ public class MainFrame extends JFrame implements Runnable {
                 action = false;
             }
 
-            if (heroes.get(currentHero).getHealth() <=0) {
-                texts.setText("Hero: " + heroes.get(currentHero).getName() +" is dead!");
-                currentHero++;
-            }
-
             //Se zerar a vida do inimigo, reinicia o nível
             if(enemies.get(currentEnemy).getHealth() <= 0 || isAncestorOf(transitionPane)) {
                 if(isAncestorOf(division) && currentEnemy < 2)
@@ -635,16 +630,27 @@ public class MainFrame extends JFrame implements Runnable {
                 texts.setText("Level passed!");
             }
 
+            //Personagem que ainda está vivo (caso algum morra, será trocado para esse)
+            int alive = currentHero;
             //Caso todos os heróis tenham morrido, aparece a tela de derrota
             int deads = 0;
             for(Character hero : heroes){
                 if(hero.getHealth() < 0){
                     deads++;
+                } else {
+                   alive = heroes.indexOf(hero);
                 }
             }
-            if(deads == 4){
+
+            if(deads == 4 && isAncestorOf(division)){
                 remove(division);
                 add(defeatPane);
+
+                setVisible(false);
+                setVisible(true);
+            } else if(heroes.get(currentHero).getHealth() <= 0) {    //Troca automaticamente de herói caso o atual morra
+                texts.setText("Hero: " + heroes.get(currentHero).getName() +" is dead!");
+                currentHero = alive;
             }
 
             //Atualiza as animações na tela
@@ -652,6 +658,7 @@ public class MainFrame extends JFrame implements Runnable {
             victoryPane.repaint();
             menuPane.repaint();
             instructionsPane.repaint();
+            defeatPane.repaint();
 
             // Unidade de tempo da animação
             try {
