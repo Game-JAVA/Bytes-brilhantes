@@ -175,7 +175,7 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Array onde os vilões são instanciados
         ArrayList<game.Character> enemies = new ArrayList<>();
-        enemies.add(new Enemy(100, 1, 0, 30, "Vilão1",
+        enemies.add(new Enemy(100, 10, 0, 30, "Vilão1",
                 "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
         enemies.add(new Enemy(100, 20, 0, 30, "Vilão2",
                 "img/Inimigo2.gif", 1000, 50, "sound/hit.wav"));
@@ -385,26 +385,6 @@ public class MainFrame extends JFrame implements Runnable {
         //O componente de baixo vai ser o painel de botões
         division.setBottomComponent(bottomDivision);
 
-        //Painel que contém a tela de vitória
-        Image victory = new Image("img/Tela de Vitória.gif", 0, 0);
-        JPanel victoryPane = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                victory.draw(g);
-            }
-        };
-        victoryPane.setVisible(true);
-
-        //Painel que contém a tela de derrota
-        Image defeat = new Image("img/Tela de Derrota.gif", 0, 0);
-        JPanel defeatPane = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                defeat.draw(g);
-            }
-        };
-        defeatPane.setVisible(true);
-
         //Painel que contém o gif de transição
         Image transition = new Image("img/Transition.gif", 0, 0);
         JPanel transitionPane = new JPanel() {
@@ -514,6 +494,98 @@ public class MainFrame extends JFrame implements Runnable {
         //Adiciona a tela de menu ao JFrame atual (tela atual)
         add(menuPane);
 
+        //Painel que contém a tela de derrota
+        Image defeat = new Image("img/Tela de Derrota.gif", 0, 0);
+        JPanel defeatPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                defeat.draw(g);
+            }
+        };
+        defeatPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+                System.out.println(x + ", " + y);
+
+                if(x >= 590 && x <= 710 && y >= 500 && y <= 550) {
+                    levels = -2;
+                    remove(defeatPane);
+                    add(menuPane);
+
+                    //Fecha e abre a tela para atualizar
+                    setVisible(false);
+                    setVisible(true);
+                }
+            }
+        });
+        defeatPane.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+
+                if(x >= 590 && x <= 710 && y >= 500 && y <= 550) {
+                    defeatPane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+                } else {
+                    defeatPane.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
+        defeatPane.setVisible(true);
+
+        //Painel que contém a tela de vitória
+        Image victory = new Image("img/Tela de Vitória.gif", 0, 0);
+        JPanel victoryPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                victory.draw(g);
+            }
+        };
+        victoryPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+
+                if(x >= 510 && x <= 640 && y >= 510 && y <= 560) {
+                    levels = -2;
+                    remove(victoryPane);
+                    add(menuPane);
+
+                    //Fecha e abre a tela para atualizar
+                    setVisible(false);
+                    setVisible(true);
+                } else if(x >= 660 && x <= 790 && y >= 510 && y <= 560) {
+                    setVisible(false);
+                    System.exit(0);
+                }
+            }
+        });
+        victoryPane.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+
+                if((x >= 510 && x <= 640 && y >= 510 && y <= 560) || (x >= 660 && x <= 790 && y >= 510 && y <= 560)) {
+                    victoryPane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+                } else {
+                    victoryPane.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
+        victoryPane.setVisible(true);
+
         //Abre em tela cheia
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         //Abre a tela
@@ -574,11 +646,11 @@ public class MainFrame extends JFrame implements Runnable {
             }
 
             //Se zerar a vida do inimigo, reinicia o nível
-            if(enemies.get(currentEnemy).getHealth() <= 0 || isAncestorOf(transitionPane)) {
+            if((enemies.get(currentEnemy).getHealth() <= 0 && isAncestorOf(division)) || isAncestorOf(transitionPane)) {
                 if(isAncestorOf(division) && currentEnemy < 2)
                     currentEnemy++;
 
-                if(levels < 3) {
+                if(levels < 2) {
                     remove(division);
                     add(transitionPane);
 
@@ -594,14 +666,17 @@ public class MainFrame extends JFrame implements Runnable {
 
                     remove(transitionPane);
                     add(division);
-
-                    //Fecha e abre a tela para atualizar
-                    setVisible(false);
-                    setVisible(true);
+                } else {
+                    remove(division);
+                    add(victoryPane);
                 }
 
+                //Fecha e abre a tela para atualizar
+                setVisible(false);
+                setVisible(true);
+
                 //Muda o background de acordo com o nível atual
-                switch (levels) {
+                switch(levels) {
                     case 0:
                         backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
                                 getResource("img/Background2.png"))));
@@ -617,17 +692,13 @@ public class MainFrame extends JFrame implements Runnable {
                                 getResource("img/BackgroundBoss.png"))));
                         break;
 
-                    case 3:
-                        remove(division);
-                        add(victoryPane);
-                        break;
-
                     default:
                         break;
                 }
 
                 levels++;
                 texts.setText("Level passed!");
+                action = false;
             }
 
             //Personagem que ainda está vivo (caso algum morra, será trocado para esse)
@@ -635,7 +706,7 @@ public class MainFrame extends JFrame implements Runnable {
             //Caso todos os heróis tenham morrido, aparece a tela de derrota
             int deads = 0;
             for(Character hero : heroes){
-                if(hero.getHealth() < 0){
+                if(hero.getHealth() <= 0){
                     deads++;
                 } else {
                    alive = heroes.indexOf(hero);
