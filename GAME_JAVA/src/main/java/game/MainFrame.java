@@ -23,7 +23,7 @@ public class MainFrame extends JFrame implements Runnable {
             start = new Sound("sound/start.wav", false),
             defeatSound = new Sound("sound/defeat.wav", false),
             victorySound = new Sound("sound/victory.wav", false),
-            menuSong = new Sound("sound/menu1.wav", true),
+            menuSong = new Sound("sound/menu.wav", true),
             level = new Sound("sound/level.wav", true),
             boss = new Sound("sound/boss.wav", true);
 
