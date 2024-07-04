@@ -52,9 +52,6 @@ public abstract class Character extends Image {
             //(pois a defesa dura somente uma rodada)
         if(c.isDefending())
             c.setDefense(0);
-        //Mesma verificação para quem está atacando também
-        if(this.isDefending())
-            this.defense = 0;
 
         this.hitSound.play();
 

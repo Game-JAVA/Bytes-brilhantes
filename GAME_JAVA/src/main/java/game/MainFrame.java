@@ -12,9 +12,9 @@ import java.util.Random;
 
 public class MainFrame extends JFrame implements Runnable {
     private boolean isPaused = false, action = false;
-    private PauseOverlay pauseOverlay;
+    private final PauseOverlay pauseOverlay;
     private int currentHero = 0, levels = -2, currentEnemy = 0;
-    private Clock clock = Clock.systemDefaultZone();
+    private final Clock clock = Clock.systemDefaultZone();
     private long millis1 = clock.millis(), millis2 = millis1;
     private Font retroFont;
     private Random r = new Random();
@@ -439,7 +439,7 @@ public class MainFrame extends JFrame implements Runnable {
                     }
 
                     //Reseta o level e o array de inimigos e heróis
-                    levels = 0;
+                    levels = -1;
                     currentEnemy = 0;
                     currentHero = 0;
 
@@ -707,6 +707,7 @@ public class MainFrame extends JFrame implements Runnable {
                 } else {
                     remove(division);
                     add(victoryPane);
+
                     level.setStop(true);
                     victorySound.play();
                 }
@@ -717,6 +718,11 @@ public class MainFrame extends JFrame implements Runnable {
 
                 //Muda o background de acordo com o nível atual
                 switch(levels) {
+                    case -1:
+                        backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
+                                getResource("img/Background1.png"))));
+                        break;
+
                     case 0:
                         backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
                                 getResource("img/Background2.png"))));
@@ -757,9 +763,11 @@ public class MainFrame extends JFrame implements Runnable {
                 remove(division);
                 add(defeatPane);
 
+                level.setStop(true);
+                defeatSound.play();
+
                 setVisible(false);
                 setVisible(true);
-                defeatSound.play();
             } else if(heroes.get(currentHero).getHealth() <= 0) {    //Troca automaticamente de herói caso o atual morra
                 texts.setText("Hero: " + heroes.get(currentHero).getName() +" is dead!");
                 currentHero = alive;
