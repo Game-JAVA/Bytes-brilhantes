@@ -23,7 +23,7 @@ public class MainFrame extends JFrame implements Runnable {
             start = new Sound("sound/start.wav", false),
             defeatSound = new Sound("sound/defeat.wav", false),
             victorySound = new Sound("sound/victory.wav", false),
-            //menu = new Sound("sound/menuSong.wav", true),
+            menuSong = new Sound("sound/menu.wav", true),
             level = new Sound("sound/level.wav", true),
             boss = new Sound("sound/boss.wav", true);
 
@@ -421,6 +421,8 @@ public class MainFrame extends JFrame implements Runnable {
                     start.play();
                     //A música do nível pode ser tocada novamente
                     level.setStop(false);
+                    //Para a música do menu
+                    menuSong.setStop(true);
                     remove(instructionsPane);
                     add(transitionPane);
 
@@ -490,8 +492,6 @@ public class MainFrame extends JFrame implements Runnable {
                         remove(menuPane);
                         add(instructionsPane);
 
-                        menuPane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-
                         //Fecha e abre a tela para atualizar
                         setVisible(false);
                         setVisible(true);
@@ -545,10 +545,13 @@ public class MainFrame extends JFrame implements Runnable {
                     levels = -2;
                     remove(defeatPane);
                     add(menuPane);
+                    menuSong.setStop(false);
 
                     //Fecha e abre a tela para atualizar
                     setVisible(false);
                     setVisible(true);
+
+                    menuSong.play();
                 }
             }
         });
@@ -590,10 +593,13 @@ public class MainFrame extends JFrame implements Runnable {
                     levels = -2;
                     remove(victoryPane);
                     add(menuPane);
+                    menuSong.setStop(false);
 
                     //Fecha e abre a tela para atualizar
                     setVisible(false);
                     setVisible(true);
+
+                    menuSong.play();
                 } else if(x >= 660 && x <= 790 && y >= 510 && y <= 560) {
                     setVisible(false);
                     System.exit(0);
@@ -623,6 +629,7 @@ public class MainFrame extends JFrame implements Runnable {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         //Abre a tela
         setVisible(true);
+        menuSong.play();
 
         //Entra num while infinito que vai atualizar as imagens a cada 200ms através da função "updateUI() de division"
         //Deixa os gifs animados
