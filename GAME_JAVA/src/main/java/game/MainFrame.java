@@ -23,7 +23,7 @@ public class MainFrame extends JFrame implements Runnable {
             start = new Sound("sound/start.wav", false),
             defeatSound = new Sound("sound/defeat.wav", false),
             victorySound = new Sound("sound/victory.wav", false),
-            menuSong = new Sound("sound/menu.wav", true),
+            menuSong = new Sound("sound/menu1.wav", true),
             level = new Sound("sound/level.wav", true),
             boss = new Sound("sound/boss.wav", true);
 
@@ -182,12 +182,14 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Array onde os vilões são instanciados
         ArrayList<game.Character> enemies = new ArrayList<>();
-        enemies.add(new Enemy(100, 10, 0, 30, "Vilão1",
+        enemies.add(new Enemy(100, 10, 0, 0, "Vilão1",
                 "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 20, 0, 30, "Vilão2",
+        enemies.add(new Enemy(100, 20, 0, 0, "Vilão2",
                 "img/Inimigo2.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 30, 0, 30, "Vilão3",
+        enemies.add(new Enemy(100, 30, 0, 0, "Vilão3",
                 "img/Inimigo3.gif", 1000, 50, "sound/hit.wav"));
+        enemies.add(new Boss(100 , 22, 0, 100, "Boss",
+                "img/Chefe.gif", 975, 100, "sound/boss_special.wav"));
 
         //Painel dos botões
         JPanel buttonsPanel = new JPanel();
@@ -421,6 +423,7 @@ public class MainFrame extends JFrame implements Runnable {
                     start.play();
                     //A música do nível pode ser tocada novamente
                     level.setStop(false);
+                    boss.setStop(false);
                     //Para a música do menu
                     menuSong.setStop(true);
                     remove(instructionsPane);
@@ -669,28 +672,36 @@ public class MainFrame extends JFrame implements Runnable {
 
             millis1 = clock.millis();
             //Caso uma ação aconteça (botão seja pressionado), passa o round pro inimigo
+                //Se o boss estiver com o poder especial completo, usa o poder especial
+                //Se não, tem 75% de chance de atacar e 25% de defender
             if(action && (millis1 - millis2) > 2000) {
-                int decision = r.nextInt(0,4);
-                switch(decision) {
-                    case 3:
-                        String defense = enemies.get(currentEnemy).defend();
-                        texts.setText(defense);
-                        break;
+                if (enemies.get(currentEnemy).getPowerCharge() >= 100 && enemies.get(currentEnemy).getImprisioned() == 0) {
+                    enemies.get(currentEnemy).specialPower(heroes.get(currentHero));
+                    texts.setText(enemies.get(currentEnemy).getName() + " stole " + heroes.get(currentHero).getName()
+                    + "'s own blood!");
+                } else {
+                    int decision = r.nextInt(0, 4);
+                    switch (decision) {
+                        case 3:
+                            String defense = enemies.get(currentEnemy).defend();
+                            texts.setText(defense);
+                            break;
 
-                    default:
-                        String attack = enemies.get(currentEnemy).attack(heroes.get(currentHero));
-                        texts.setText(attack);
+                        default:
+                            String attack = enemies.get(currentEnemy).attack(heroes.get(currentHero));
+                            texts.setText(attack);
                     }
+                }
 
                 action = false;
             }
 
             //Se zerar a vida do inimigo, reinicia o nível
             if((enemies.get(currentEnemy).getHealth() <= 0 && isAncestorOf(division)) || isAncestorOf(transitionPane)) {
-                if(isAncestorOf(division) && currentEnemy < 2)
+                if(isAncestorOf(division) && currentEnemy < 3)
                     currentEnemy++;
 
-                if(levels < 2) {
+                if(levels < 3) {
                     level.setStop(true);
 
                     remove(division);
@@ -710,12 +721,17 @@ public class MainFrame extends JFrame implements Runnable {
                     add(division);
 
                     level.setStop(false);
-                    level.play();
+
+                    if(levels < 2)
+                        level.play();
+                    else
+                        boss.play();
                 } else {
                     remove(division);
                     add(victoryPane);
 
                     level.setStop(true);
+                    boss.setStop(true);
                     victorySound.play();
                 }
 
@@ -766,6 +782,7 @@ public class MainFrame extends JFrame implements Runnable {
                 }
             }
 
+            //Se estiver na tela de combate e os 4 heróis estão mortos, vai pra tela de derrota
             if(deads == 4 && isAncestorOf(division)){
                 remove(division);
                 add(defeatPane);
