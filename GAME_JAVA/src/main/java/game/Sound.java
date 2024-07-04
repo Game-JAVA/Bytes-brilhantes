@@ -8,7 +8,7 @@ public class Sound implements Runnable {
 
     // Atributos
     private String audioPath;
-    private boolean loop;
+    private boolean loop, stop = false;
 
     //Contrutores
     public Sound(String audioPath, boolean loop) {
@@ -56,6 +56,10 @@ public class Sound implements Runnable {
                 // Lê dados do áudio do InputStream e escreve na linha de reprodução
                 while ((bytesRead = audioStream.read(buffer)) != -1) {
                     line.write(buffer, 0, bytesRead);
+                    if(getStop()) {
+                        while (getStop());
+                        break;
+                    }
                 }
 
                 // Encerra a reprodução
@@ -77,6 +81,14 @@ public class Sound implements Runnable {
 
     public void setLoop(boolean loop) {
         this.loop = loop;
+    }
+
+    public void setStop(boolean stop) {
+        this.stop = stop;
+    }
+
+    public boolean getStop() {
+        return stop;
     }
 
 }
