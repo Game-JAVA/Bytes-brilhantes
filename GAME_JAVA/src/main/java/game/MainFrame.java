@@ -419,8 +419,29 @@ public class MainFrame extends JFrame implements Runnable {
 
                 if(x >= 1090 && x <= 1220 && y >= 570 && y <= 630) {
                     start.play();
+                    //A música do nível pode ser tocada novamente
+                    level.setStop(false);
                     remove(instructionsPane);
                     add(transitionPane);
+
+                    //Reseta os atributos dos inimigos para o padrão
+                    for(Character enemy : enemies) {
+                        enemy.setHealth(100);
+                        enemy.setImprisioned(0);
+                        enemy.setDefense(0);
+                    }
+
+                    //Mesmo para os heróis
+                    for(Character hero : heroes) {
+                        hero.setHealth(100);
+                        hero.setPowerCharge(0);
+                        hero.setDefense(0);
+                    }
+
+                    //Reseta o level e o array de inimigos e heróis
+                    levels = 0;
+                    currentEnemy = 0;
+                    currentHero = 0;
 
                     //Fecha e abre a tela para atualizar
                     setVisible(false);
@@ -686,6 +707,7 @@ public class MainFrame extends JFrame implements Runnable {
                 } else {
                     remove(division);
                     add(victoryPane);
+                    level.setStop(true);
                     victorySound.play();
                 }
 
