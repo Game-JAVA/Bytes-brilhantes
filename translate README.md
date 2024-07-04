@@ -40,19 +40,19 @@ Showing an exceptional talent from a young age for the manipulation of cosmic en
 
 •With each attack and defense used, the special power recharges. 
 
-•The game consists of three phases, the first two are battles against the enemy and the third last phase is a battle against the boss. 
+•The game consists of four phases, the first three are battles against the enemy and the fourth and last phase is a battle against the boss. 
 
 *Rules* 
 
 •The only rule is that the special powers have a charging limit, and to recharge it you need to attack and defend.
 
-•Faria: Special power recharges every 3 turns. 
+•Faria: Special power recharges every 5 turns. 
 
-•Valentina: Special power recharges every 2 levels. 
+•Valentina: Special power recharges every 10 turns. 
 
 •Bruno: Special power recharges every 2 turns. 
 
-•Leticia: Special power recharges every 2 turns. 
+•Leticia: Special power recharges every 7 turns. 
 
 *Controls* 
 
