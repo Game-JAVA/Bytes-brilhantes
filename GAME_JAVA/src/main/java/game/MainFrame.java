@@ -185,7 +185,7 @@ public class MainFrame extends JFrame implements Runnable {
         enemies.add(new Enemy(100, 10, 0, 0, "Vilão1",
                 "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
         enemies.add(new Enemy(100, 20, 0, 0, "Vilão2",
-                "img/Inimigo2.gif", 1000, 50, "sound/hit.wav"));
+                "img/Inimigo2.gif", 1000, 75, "sound/hit.wav"));
         enemies.add(new Enemy(100, 30, 0, 0, "Vilão3",
                 "img/Inimigo3.gif", 1000, 50, "sound/hit.wav"));
         enemies.add(new Boss(100 , 22, 0, 100, "Boss",
@@ -758,7 +758,7 @@ public class MainFrame extends JFrame implements Runnable {
 
                     case 2:
                         backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
-                                getResource("img/BackgroundBoss.png"))));
+                                getResource("img/BackgroundBoss.gif"))));
                         break;
 
                     default:
