@@ -171,9 +171,9 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Array onde os heróis são instanciados
         ArrayList<game.Character> heroes = new ArrayList<>();
-        heroes.add(new Bruno(100, 6, 5, 50, "Bruno",
+        heroes.add(new Bruno(100, 10, 5, 40, "Bruno",
                 "img/Bruno.gif", 50, 200, "sound/bruno_special.wav"));
-        heroes.add(new Faria(100, 10, 0, 20, "Faria",
+        heroes.add(new Faria(100, 15, 0, 20, "Faria",
                 "img/Faria.gif", 50, 200, "sound/faria_special.wav"));
         heroes.add(new Leticia(100, 20, 6, 15, "Leticia",
                 "img/Leticia.gif", 50, 200, "sound/leticia_special.wav"));
@@ -184,11 +184,11 @@ public class MainFrame extends JFrame implements Runnable {
         ArrayList<game.Character> enemies = new ArrayList<>();
         enemies.add(new Enemy(100, 10, 0, 0, "Vilão1",
                 "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 20, 0, 0, "Vilão2",
+        enemies.add(new Enemy(100, 12, 0, 0, "Vilão2",
                 "img/Inimigo2.gif", 1000, 75, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 30, 0, 0, "Vilão3",
+        enemies.add(new Enemy(100, 14, 0, 0, "Vilão3",
                 "img/Inimigo3.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Boss(100 , 22, 0, 100, "Boss",
+        enemies.add(new Boss(100 , 18, 0, 100, "Boss",
                 "img/Chefe.gif", 975, 100, "sound/boss_special.wav"));
 
         //Painel dos botões
