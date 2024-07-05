@@ -164,23 +164,25 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Array onde os heróis são instanciados
         ArrayList<game.Character> heroes = new ArrayList<>();
-        heroes.add(new Bruno(100, 6, 5, 50, "Bruno",
+        heroes.add(new Bruno(100, 10, 0, 40, "Bruno",
                 "img/Bruno.gif", 50, 200, "sound/hit.wav"));
-        heroes.add(new Faria(100, 10, 0, 20, "Faria",
+        heroes.add(new Faria(100, 15, 0, 20, "Faria",
                 "img/Faria.gif", 50, 200, "sound/hit.wav"));
-        heroes.add(new Leticia(100, 20, 6, 15, "Leticia",
+        heroes.add(new Leticia(100, 20, 0, 15, "Leticia",
                 "img/Leticia.gif", 50, 200, "sound/hit.wav"));
-        heroes.add(new Valentina(100, 15, 10, 10, "Valentina",
+        heroes.add(new Valentina(100, 15, 0, 10, "Valentina",
                 "img/Valentina.gif", 50, 200, "sound/hit.wav"));
 
         //Array onde os vilões são instanciados
         ArrayList<game.Character> enemies = new ArrayList<>();
-        enemies.add(new Enemy(100, 10, 0, 30, "Vilão1",
+        enemies.add(new Enemy(100, 10, 0, 0, "Vilão1",
                 "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 20, 0, 30, "Vilão2",
+        enemies.add(new Enemy(100, 12, 0, 0, "Vilão2",
                 "img/Inimigo2.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 30, 0, 30, "Vilão3",
+        enemies.add(new Enemy(100, 14, 0, 0, "Vilão3",
                 "img/Inimigo3.gif", 1000, 50, "sound/hit.wav"));
+        enemies.add(new Boss(100 , 18, 0, 100, "Boss",
+                "img/Chefe.gif", 975, 100, "sound/hit.wav"));
 
         //Painel dos botões
         JPanel buttonsPanel = new JPanel();
@@ -294,7 +296,7 @@ public class MainFrame extends JFrame implements Runnable {
                         texts.setText(currentCharacter.getName() + " used special attack on " +
                                 enemies.get(currentEnemy).getName() + "!");
 
-                       specialGifLabel.setVisible(true);
+                        specialGifLabel.setVisible(true);
 
                         // Remove o GIF especial após um tempo (3 segundos)
                         // Cria um novo timer que executará uma ação após 3000 milissegundos (3 segundos)
@@ -630,27 +632,31 @@ public class MainFrame extends JFrame implements Runnable {
             millis1 = clock.millis();
             //Caso uma ação aconteça (botão seja pressionado), passa o round pro inimigo
             if(action && (millis1 - millis2) > 2000) {
-                int decision = r.nextInt(0,4);
-                switch(decision) {
-                    case 3:
-                        String defense = enemies.get(currentEnemy).defend();
-                        texts.setText(defense);
-                        break;
+                if (enemies.get(currentEnemy).getPowerCharge() >= 100 && enemies.get(currentEnemy).getImprisioned() == 0) {
+                    enemies.get(currentEnemy).specialPower(heroes.get(currentHero));
+                } else {
+                    int decision = r.nextInt(0, 4);
+                    switch (decision) {
+                        case 3:
+                            String defense = enemies.get(currentEnemy).defend();
+                            texts.setText(defense);
+                            break;
 
-                    default:
-                        String attack = enemies.get(currentEnemy).attack(heroes.get(currentHero));
-                        texts.setText(attack);
+                        default:
+                            String attack = enemies.get(currentEnemy).attack(heroes.get(currentHero));
+                            texts.setText(attack);
                     }
+                }
 
                 action = false;
             }
 
             //Se zerar a vida do inimigo, reinicia o nível
             if((enemies.get(currentEnemy).getHealth() <= 0 && isAncestorOf(division)) || isAncestorOf(transitionPane)) {
-                if(isAncestorOf(division) && currentEnemy < 2)
+                if(isAncestorOf(division) && currentEnemy < 3)
                     currentEnemy++;
 
-                if(levels < 2) {
+                if(levels < 3) {
                     remove(division);
                     add(transitionPane);
 
@@ -709,7 +715,7 @@ public class MainFrame extends JFrame implements Runnable {
                 if(hero.getHealth() <= 0){
                     deads++;
                 } else {
-                   alive = heroes.indexOf(hero);
+                    alive = heroes.indexOf(hero);
                 }
             }
 
