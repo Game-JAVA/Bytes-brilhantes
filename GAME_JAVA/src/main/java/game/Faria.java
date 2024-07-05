@@ -1,6 +1,6 @@
 package game;
 
-public class Faria extends Character{
+public class Faria extends Character {
     //O poder especial já começa falso
     private boolean special = false;
 
@@ -20,6 +20,7 @@ public class Faria extends Character{
 
             // poder especial ativo
             special = true;
+            this.sound.play();
         }
     }
 
@@ -65,7 +66,7 @@ public class Faria extends Character{
         if(c.isDefending())
             c.setDefense(0);
 
-        this.sound.play();
+        this.hitSound.play();
 
         return this.getName() + " attacked " + c.getName() + ", dealing " + damage + " damage!";
     }

@@ -1,63 +1,59 @@
-*Bytes-Brilhantes* 
+*Bright-Bytes* 
 
-*Descrição* 
+*Description* 
 
-Esse jogo tem como objetivo derrotar os inimigos até a chegada do chefão, onde será a batalha final. Inspirado na tela de combate do Pokémon FireRed, você terá uma equipe de 4 heróis, cada um com seus respectivos poderes e habilidades. A cada combate você poderá escolher estrategicamente entre um deles para a batalha.
+This game aims to defeat enemies until the boss arrives, where the final battle will take place. Inspired by the combat screen in Pokémon FireRed, you'll have a team of 4 heroes, each with their respective powers and abilities. In each combat you'll be able to strategically choose between one of them for battle.
 
-*Heróis*
+*Heroes* 
 
-*Faria*
+*Faria* 
 
-Esse herói é um guerreiro onde visa proteger a sua equipe e população, pois veio de uma vila devastada pela guerra, e prometeu para si mesmo proteger as pessoas. Treinado por muito tempo por mestres habilidosos, ele adquiriu o talento da “fúria do dragão”, onde aumenta o dano dos ataques 2x por três rodadas. 
+This hero is a warrior who aims to protect his team and population, as he came from a war-torn village, and promised himself to protect the people. Trained for a long time by skilled masters, he acquired the talent of "dragon's fury", where he increases the damage of attacks 2x for three rounds. 
 
 *Valentina* 
 
-Por ter pais feiticeiros, ela sempre teve uma conexão muito forte com o mundo espiritual. Com a habilidade de se comunicar com outros planos espirituais foi treinada por uma antiga e sábia necromante, onde se interessou pelas arte proibidas na qual aprendeu e aperfeiçoou o seu  poder de ressuscitar um aliado a cada 2 níveis. 
+Because she has sorcerer parents, she has always had a very strong connection to the spirit world. With the ability to communicate with other spiritual planes, she was trained by an ancient and wise necromancer, where she became interested in the forbidden arts in which she learned and perfected her power to resurrect an ally every 2 levels.
 
 *Bruno* 
 
-Por ter afinidade com os elementos desde pequeno, decidiu se aprofundar e tornar aquilo como seu.  Levado aos anciãos, aprendeu mais coisas sobre seus poderes e teve um destaque em sua habilidade especial o “tornado de fogo”, uma combinação das forças do vento e do fogo, tendo o seu carregamento a cada duas rodadas . 
+Because he had an affinity with the elements since he was a child, he decided to go deeper and make it his own. Taken to the elders, he learned more about his powers and had a highlight in his special ability the "fire tornado", a combination of the forces of wind and fire, having its charge every two rounds. 
 
-*Letícia* 
+*Leticia* 
 
-Mostrando um talento excepcional desde jovem pela manipulação de energias cósmicas chamou atenção dos sábios astrólogos, no qual teve aulas para aprimorar mais os seus poderes, no qual uma das curadoras viu um potencial incrível e determinou que a focasse e tornasse sua habilidade especial atordoar seus inimigos na hora da batalha, fazendo com que fiquem 2 rodas sem ter forças o suficiente para participar do combate.
+Showing an exceptional talent from a young age for the manipulation of cosmic energies, she caught the attention of the wise astrologers, in which she took classes to further improve her powers, in which one of the healers saw an incredible potential and determined that she focus and make her special ability to stun her enemies at the time of battle, causing them to be 2 wheels without having enough strength to participate in combat.
 
+*How to play*
 
-*Como jogar* 
+•Genre : Turn-based RPG. 
 
-•Gênero : RPG de turno.
+•As it is a turn-based RPG, then one attacks and the other defends, so on and so on every turn. 
 
-•Como é RPG por turno, então um ataca e outro defende, assim sucessivamente a cada turno.
+•You will have 4 buttons on the screen, each of which will correspond to one thing. 
 
-•Terá presente na tela 4 botões, que cada um corresponderá a uma coisa.
+•Attack: This button opens the option to use the normal attack. 
 
-•Attack: nesse botão ele abre a opção de usar o ataque normal.
+•Defense: You use defense. 
 
-•Defense: você usa a defesa.
+•Swap: in this button you can change characters. 
 
-•Swap: nesse botão você pode fazer a troca de personagem .
+•Special: In it you use the special power. 
 
-•Special: Nele você usa o poder especial. 
+•With each attack and defense used, the special power recharges. 
 
-•A cada ataque e defesa utilizados o poder especial recarrega. 
+•The game consists of four phases, the first three are battles against the enemy and the fourth and last phase is a battle against the boss. 
 
-•O Jogo é composto por três fases, as duas primeira são batalhas contra o inimigo e a terceira última fase é uma batalha contra o chefão.
+*Rules* 
 
+•The only rule is that the special powers have a charging limit, and to recharge it you need to attack and defend.
 
-*Regras* 
+•Faria: Special power recharges every 5 turns. 
 
-•A única regra é que os poderes especiais tem um limite de carregamento, e para recarregar ele é necessário atacar e defender.
+•Valentina: Special power recharges every 10 turns. 
 
-  •Faria: Poder especial recarrega a cada 3 rodadas.
-  
-  •Valentina: Poder especial recarrega a cada 2 níveis.
-  
-  •Bruno: Poder especial recarrega a cada 2 rodadas. 
-  
-  •Letícia: Poder especial recarrega a cada 2 rodadas.
+•Bruno: Special power recharges every 2 turns. 
 
+•Leticia: Special power recharges every 7 turns. 
 
-*Controles*
+*Controls* 
 
-•Apenas mouse. 
-
+•Mouse only.

@@ -12,8 +12,10 @@ public class Leticia extends Character{
         if(this.getPowerCharge() >= 100){
             //O inimigo será aprisionado
             c.setImprisioned(2);
+
             //E o poder especial voltará a 0
             this.setPowerCharge(0);
+            this.sound.play();
         }
     }
 
