@@ -10,8 +10,6 @@ public class Enemy extends Character {
 
     @Override
     public void specialPower(Character c) {
-        // Ativa a habilidade especial do vilão
-        this.specialDefense = true;
-        this.setPowerCharge(0);
+
     }
 }
