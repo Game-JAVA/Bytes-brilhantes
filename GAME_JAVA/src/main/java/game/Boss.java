@@ -24,7 +24,7 @@ public class Boss extends Character {
 
         //Se cura metade do dano causado
         hero.setHealth(hero.getHealth() - damage);
-        this.setHealth(this.getHealth() + damage / 2);
+        this.setHealth(this.getHealth() + (int) (damage / 1.5));
 
         //Zera a defesa do herói se ele estiver defendendo
         if(hero.isDefending())

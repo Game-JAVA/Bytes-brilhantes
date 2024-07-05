@@ -149,9 +149,9 @@ public class MainFrame extends JFrame implements Runnable {
     }
 
     private String defenseBar(Character c) {
-        if(c.getDefense() >= 15) {
+        if(c.getDefense() >= 10) {
             return "img/Defense/2.png";
-        } else if(c.getDefense() >= 10 && c.getDefense() > 0) {
+        } else if(c.getDefense() >= 5 && c.getDefense() > 0) {
             return "img/Defense/2-1.png";
         } else {
             return "img/Defense/2-2.png";
@@ -171,24 +171,24 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Array onde os heróis são instanciados
         ArrayList<game.Character> heroes = new ArrayList<>();
-        heroes.add(new Bruno(100, 10, 5, 40, "Bruno",
+        heroes.add(new Bruno(100, 7, 3, 50, "Bruno",
                 "img/Bruno.gif", 50, 200, "sound/bruno_special.wav"));
-        heroes.add(new Faria(100, 15, 0, 20, "Faria",
+        heroes.add(new Faria(100, 10, 5, 40, "Faria",
                 "img/Faria.gif", 50, 200, "sound/faria_special.wav"));
-        heroes.add(new Leticia(100, 20, 6, 15, "Leticia",
+        heroes.add(new Leticia(100, 20, 0, 40, "Leticia",
                 "img/Leticia.gif", 50, 200, "sound/leticia_special.wav"));
-        heroes.add(new Valentina(100, 15, 10, 10, "Valentina",
+        heroes.add(new Valentina(100, 10, 0, 20, "Valentina",
                 "img/Valentina.gif", 50, 200, "sound/valentina_special.wav"));
 
         //Array onde os vilões são instanciados
         ArrayList<game.Character> enemies = new ArrayList<>();
-        enemies.add(new Enemy(100, 10, 0, 0, "Vilão1",
+        enemies.add(new Enemy(100, 15, 0, 0, "Vilão1",
                 "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 12, 0, 0, "Vilão2",
+        enemies.add(new Enemy(100, 18, 0, 0, "Vilão2",
                 "img/Inimigo2.gif", 1000, 75, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 14, 0, 0, "Vilão3",
+        enemies.add(new Enemy(100, 18, 0, 0, "Vilão3",
                 "img/Inimigo3.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Boss(100 , 18, 0, 100, "Boss",
+        enemies.add(new Boss(100 , 20, 0, 100, "Boss",
                 "img/Chefe.gif", 975, 100, "sound/boss_special.wav"));
 
         //Painel dos botões
@@ -345,10 +345,11 @@ public class MainFrame extends JFrame implements Runnable {
                         repaint(); // Redesenha a tela após a troca de personagem
                         // Atualiza o texto para mostrar que o herói atual foi trocado
                         texts.setText("Swapped to " + selectedCharacter.getName() + "!");
+
+                        action = true;
+                        millis2 = clock.millis();
                     }
 
-                    action = true;
-                    millis2 = clock.millis();
                     click.play();
                 }
             }
@@ -788,6 +789,7 @@ public class MainFrame extends JFrame implements Runnable {
                 add(defeatPane);
 
                 level.setStop(true);
+                boss.setStop(true);
                 defeatSound.play();
 
                 setVisible(false);

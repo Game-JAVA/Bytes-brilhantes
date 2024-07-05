@@ -66,7 +66,7 @@ public abstract class Character extends Image {
 
         //Verifca se o personagem está aprisionado (poder da Letícia)
         if(this.imprisioned <= 0) {
-            this.defense = r.nextInt(10,21);
+            this.defense = r.nextInt(5,16);
             //Ao defender, aumentar a carga do poder do personagem
             increasePowerCharge();
         } else {

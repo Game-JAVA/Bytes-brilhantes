@@ -11,11 +11,11 @@ public class Bruno extends Character {
         //Se o poder estiver carregado
         if (this.getPowerCharge() >= 100){
             //O ataque será multiplicado por 5
-            this.setAttack(this.getAttack()*5);
+            this.setAttack(this.getAttack()*3);
             this.attack(c);
 
             //E depois voltará ao normal
-            this.setAttack(this.getAttack()/5);
+            this.setAttack(this.getAttack()/3);
 
             //E o poder especial voltará a 0
             this.setPowerCharge(0);
