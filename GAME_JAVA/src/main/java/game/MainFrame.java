@@ -26,6 +26,10 @@ public class MainFrame extends JFrame implements Runnable {
             menuSong = new Sound("sound/menu.wav", true),
             level = new Sound("sound/level.wav", true),
             boss = new Sound("sound/boss.wav", true);
+    private final Image damagePointsDec = new Image("img/Attack/null.png", 300, 170),
+            damagePointsUnit = new Image("img/Attack/null.png", 350, 170),
+            defendPointsDec = new Image("img/Defend/null.png", 900, 10),
+            defendPointsUnit = new Image("img/Defend/null.png", 950, 10);
 
     public MainFrame() {
         pauseOverlay = new PauseOverlay();
@@ -229,12 +233,30 @@ public class MainFrame extends JFrame implements Runnable {
         buttons.get(0).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(!action) {
+                    cleanNumbers();
+
                     // Executa o ataque do herói atual (currentHero) contra o vilão (heroes.get(1))
-                    String attack = heroes.get(currentHero).attack(enemies.get(currentEnemy));
+                    int damage = heroes.get(currentHero).attack(enemies.get(currentEnemy));
                     // Atualiza o texto para mostrar o ataque realizado e o dano causado
-                    texts.setText(attack);
-                    action = true;
+                    texts.setText(heroes.get(currentHero).getName() + " attacked " +
+                            enemies.get(currentEnemy).getName() + ", dealing " + damage + " damage!");
+
+                    int unit = damage % 10;
+                    int decimal = damage / 10;
+
+                    damagePointsDec.setPosition_x(900);
+                    damagePointsDec.setPosition_y(10);
+                    damagePointsUnit.setPosition_x(940);
+                    damagePointsUnit.setPosition_y(10);
+
+                    //Atualiza as imagens de dano
+                    damagePointsUnit.setImg(new ImageIcon(Objects.requireNonNull
+                            (this.getClass().getResource("img/Attack/" + unit + ".png"))));
+                    damagePointsDec.setImg(new ImageIcon(Objects.requireNonNull
+                            (this.getClass().getResource("img/Attack/" + decimal + ".png"))));
+
                     millis2 = clock.millis();
+                    action = true;
                 }
             }
         });
@@ -243,10 +265,27 @@ public class MainFrame extends JFrame implements Runnable {
         buttons.get(1).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(!action) {
+                    cleanNumbers();
+
                     // Executa a defesa do herói atual (currentHero)
-                    String defense = heroes.get(currentHero).defend();
+                    int defense = heroes.get(currentHero).defend();
                     // Atualiza o texto para mostrar que o herói atual defendeu contra o vilão
-                    texts.setText(defense);
+                    texts.setText(heroes.get(currentHero).getName() + " defended itself by " + defense + " points!");
+
+                    int unit = defense % 10;
+                    int decimal = defense / 10;
+
+                    defendPointsDec.setPosition_x(300);
+                    defendPointsDec.setPosition_y(170);
+                    defendPointsUnit.setPosition_x(340);
+                    defendPointsUnit.setPosition_y(170);
+
+                    //Atualiza as imagens de defesa
+                    defendPointsUnit.setImg(new ImageIcon(Objects.requireNonNull
+                            (this.getClass().getResource("img/Defend/" + unit + ".png"))));
+                    defendPointsDec.setImg(new ImageIcon(Objects.requireNonNull
+                            (this.getClass().getResource("img/Defend/" + decimal + ".png"))));
+
                     action = true;
                     millis2 = clock.millis();
                 }
@@ -256,12 +295,13 @@ public class MainFrame extends JFrame implements Runnable {
         // Botão de poder especial
         buttons.get(2).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
                 // Obtém o herói atual
                 Character currentCharacter = heroes.get(currentHero);
                 if(currentCharacter.getPowerCharge() >= 100 && !action){
                     // Verifica se o herói atual é uma instância de Valentina
                     if (currentCharacter instanceof Valentina) {
+                        cleanNumbers();
+
                         // Cria um PopUp para selecionar um personagem para reviver
                         PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, true);
                         popUp.setVisible(true); // Exibe o diálogo modal
@@ -297,6 +337,8 @@ public class MainFrame extends JFrame implements Runnable {
                             texts.setText("There is no dead allies!");
                         }
                     } else {
+                        cleanNumbers();
+
                         // Se não for Valentina, usa o poder especial contra o vilão
                         currentCharacter.specialPower(enemies.get(currentEnemy));
                         // Atualiza o texto para mostrar que o herói usou seu ataque especial no vilão
@@ -319,6 +361,7 @@ public class MainFrame extends JFrame implements Runnable {
                         timer.setRepeats(false);
                         // Inicia o timer. Após 3 segundos, a ação definida acima será executada
                         timer.start();
+
                         action = true;
                         millis2 = clock.millis();
                     }
@@ -332,6 +375,8 @@ public class MainFrame extends JFrame implements Runnable {
         buttons.get(3).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(!action) {
+                    cleanNumbers();
+
                     // Cria um PopUp para selecionar um personagem para troca
                     PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, false);
                     popUp.setVisible(true); // Exibe o diálogo modal
@@ -349,6 +394,7 @@ public class MainFrame extends JFrame implements Runnable {
 
                     action = true;
                     millis2 = clock.millis();
+
                     click.play();
                 }
             }
@@ -361,6 +407,14 @@ public class MainFrame extends JFrame implements Runnable {
         //Instancia as barras de defesa iniciais (começando invisíveis)
         Image heroDefense = new Image("img/Defense/2-2.png", 73, 160);
         Image enemyDefense = new Image("img/Defense/2-2.png", 1023, 0);
+
+        Image heroHPHund = new Image("img/HP/1.png", 245, 160);
+        Image heroHPDec = new Image("img/HP/0.png", 260, 160);
+        Image heroHPUnit = new Image("img/HP/0.png", 280, 160);
+
+        Image enemyHPHund = new Image("img/HP/1.png", 1195, 0);
+        Image enemyHPDec = new Image("img/HP/0.png", 1210, 0);
+        Image enemyHPUnit = new Image("img/HP/0.png", 1230, 0);
 
         //Cria o JPane em que as imagens (jogador, inimigo e plano de fundo) são desenhadas
         JPanel pane = new JPanel() {
@@ -375,6 +429,19 @@ public class MainFrame extends JFrame implements Runnable {
                 enemies.get(currentEnemy).draw(g);
                 enemyHealth.draw(g);
                 enemyDefense.draw(g);
+
+                damagePointsDec.draw(g);
+                damagePointsUnit.draw(g);
+                defendPointsDec.draw(g);
+                defendPointsUnit.draw(g);
+
+                heroHPUnit.draw(g);
+                heroHPHund.draw(g);
+                heroHPDec.draw(g);
+
+                enemyHPUnit.draw(g);
+                enemyHPHund.draw(g);
+                enemyHPDec.draw(g);
             }
         };
 
@@ -675,28 +742,67 @@ public class MainFrame extends JFrame implements Runnable {
                 //Se o boss estiver com o poder especial completo, usa o poder especial
                 //Se não, tem 75% de chance de atacar e 25% de defender
             if(action && (millis1 - millis2) > 2000) {
+                cleanNumbers();
+
                 if (enemies.get(currentEnemy).getPowerCharge() >= 100 && enemies.get(currentEnemy).getImprisioned() == 0) {
                     enemies.get(currentEnemy).specialPower(heroes.get(currentHero));
                     texts.setText(enemies.get(currentEnemy).getName() + " stole " + heroes.get(currentHero).getName()
                     + "'s own blood!");
                 } else {
                     int decision = r.nextInt(0, 4);
-                    switch (decision) {
-                        case 3:
-                            String defense = enemies.get(currentEnemy).defend();
-                            texts.setText(defense);
-                            break;
+                    if (decision == 3) {
+                        int defense = enemies.get(currentEnemy).defend();
+                        if (defense != -1) {
+                            texts.setText(enemies.get(currentEnemy).getName() + " defended itself by " + defense +
+                                    " points!");
 
-                        default:
-                            String attack = enemies.get(currentEnemy).attack(heroes.get(currentHero));
-                            texts.setText(attack);
+                            int unit = defense % 10;
+                            int decimal = defense / 10;
+
+                            defendPointsDec.setPosition_x(900);
+                            defendPointsDec.setPosition_y(10);
+                            defendPointsUnit.setPosition_x(940);
+                            defendPointsUnit.setPosition_y(10);
+
+                            //Atualiza as imagens de defesa
+                            defendPointsUnit.setImg(new ImageIcon(Objects.requireNonNull
+                                    (this.getClass().getResource("img/Defend/" + unit + ".png"))));
+                            defendPointsDec.setImg(new ImageIcon(Objects.requireNonNull
+                                    (this.getClass().getResource("img/Defend/" + decimal + ".png"))));
+                        }
+                        else {
+                            texts.setText(enemies.get(currentEnemy).getName() + " is imprisioned!");
+                        }
+                    } else {
+                        int damage = enemies.get(currentEnemy).attack(heroes.get(currentHero));
+                        if (damage != -1) {
+                            texts.setText(enemies.get(currentEnemy).getName() + " attacked " +
+                                    heroes.get(currentHero).getName() + ", dealing " + damage + " damage!");
+
+                            int unit = damage % 10;
+                            int decimal = damage / 10;
+
+                            defendPointsDec.setPosition_x(300);
+                            defendPointsDec.setPosition_y(170);
+                            defendPointsUnit.setPosition_x(340);
+                            defendPointsUnit.setPosition_y(170);
+
+                            //Atualiza as imagens de defesa
+                            defendPointsUnit.setImg(new ImageIcon(Objects.requireNonNull
+                                    (this.getClass().getResource("img/Attack/" + unit + ".png"))));
+                            defendPointsDec.setImg(new ImageIcon(Objects.requireNonNull
+                                    (this.getClass().getResource("img/Attack/" + decimal + ".png"))));
+                        }
+                        else {
+                            texts.setText(enemies.get(currentEnemy).getName() + " is imprisioned!");
+                        }
                     }
                 }
 
                 action = false;
             }
 
-            //Se zerar a vida do inimigo, reinicia o nível
+            //Se zerar a vida do inimigo, avança o nível
             if((enemies.get(currentEnemy).getHealth() <= 0 && isAncestorOf(division)) || isAncestorOf(transitionPane)) {
                 if(isAncestorOf(division) && currentEnemy < 3)
                     currentEnemy++;
@@ -811,5 +917,18 @@ public class MainFrame extends JFrame implements Runnable {
                 throw new RuntimeException(ex);
             }
         }
+    }
+
+    public void cleanNumbers() {
+        //Limpa os números da tela
+        defendPointsDec.setImg(new ImageIcon(Objects.requireNonNull
+                (this.getClass().getResource("img/Defend/null.png"))));
+        defendPointsUnit.setImg(new ImageIcon(Objects.requireNonNull
+                (this.getClass().getResource("img/Defend/null.png"))));
+
+        damagePointsDec.setImg(new ImageIcon(Objects.requireNonNull
+                (this.getClass().getResource("img/Defend/null.png"))));
+        damagePointsUnit.setImg(new ImageIcon(Objects.requireNonNull
+                (this.getClass().getResource("img/Defend/null.png"))));
     }
 }

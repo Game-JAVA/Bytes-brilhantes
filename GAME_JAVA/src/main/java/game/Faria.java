@@ -25,7 +25,7 @@ public class Faria extends Character {
     }
 
     @Override
-    public String attack(Character c) {
+    public int attack(Character c) {
         if (special) {
             //Se passar de 3 rodadas, o ataque especial para de funcionar
             if (rounds >= 3) {
@@ -52,7 +52,7 @@ public class Faria extends Character {
         } else {
             damage = 0;
             this.setImprisioned(this.getImprisioned() - 1);;
-            return this.getName() + " is imprisioned!";
+            return -1;
         }
 
         //10% de chance de acerto crítico
@@ -68,7 +68,7 @@ public class Faria extends Character {
 
         this.hitSound.play();
 
-        return this.getName() + " attacked " + c.getName() + ", dealing " + damage + " damage!";
+        return damage;
     }
 
 }
