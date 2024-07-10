@@ -21,6 +21,9 @@ public class Faria extends Character {
             // poder especial ativo
             special = true;
             this.sound.play();
+
+            //E o poder especial voltará a 0
+            this.setPowerCharge(0);
         }
     }
 
@@ -32,12 +35,13 @@ public class Faria extends Character {
                 this.setAttack(this.getAttack() / 3);
                 special = false;
 
-                //E o poder especial voltará a 0
-                this.setPowerCharge(0);
                 //Caso não passe,  o ataque continua funcionando
             } else {
                 rounds++;
             }
+
+            //E o poder especial voltará a 0
+            this.setPowerCharge(0);
         }
 
         int damage;

@@ -799,6 +799,12 @@ public class MainFrame extends JFrame implements Runnable {
                 currentHero = alive;
             }
 
+            if(heroes.get(currentHero).getPowerCharge() >= 100) {
+                buttons.get(2).setText("SPECIAL READY");
+            } else {
+                buttons.get(2).setText("Special");
+            }
+
             //Atualiza as animações na tela
             division.repaint();
             victoryPane.repaint();
