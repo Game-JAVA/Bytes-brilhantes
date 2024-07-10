@@ -14,7 +14,7 @@ public class Faria extends Character {
     @Override
     public void specialPower(Character c) {
         //Se o poder estiver carregado a 100
-        if (this.getPowerCharge() == 100) {
+        if (this.getPowerCharge() >= 100) {
             //Vai aumetar o  ataque em 2x
             this.setAttack(this.getAttack() * 3);
 
