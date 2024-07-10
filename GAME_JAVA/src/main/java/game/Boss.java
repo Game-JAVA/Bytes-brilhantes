@@ -4,9 +4,9 @@ import java.util.Random;
 
 public class Boss extends Character {
 
-    public Boss(int health, int attack, int mitigation, int powerLoad,
+    public Boss(int health, int attack, int defense, int powerLoad,
                 String name, String url, int position_x, int position_y, String sound) {
-        super(health, attack, mitigation, powerLoad, name, url, position_x, position_y, sound);
+        super(health, attack, defense, powerLoad, name, url, position_x, position_y, sound);
     }
 
     @Override
