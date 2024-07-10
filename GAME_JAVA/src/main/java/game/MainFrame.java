@@ -38,8 +38,6 @@ public class MainFrame extends JFrame implements Runnable {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     togglePause();
-                } else if (isPaused) {
-                    togglePause(); // Qualquer tecla para retomar
                 }
             }
         });
@@ -224,31 +222,41 @@ public class MainFrame extends JFrame implements Runnable {
         bottomDivision.setLeftComponent(texts);
         bottomDivision.setRightComponent(buttonsPanel);
 
+
         // Ação de cada botão
         // Botão de ataque
         buttons.get(0).addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
-                if (!action) {
-                    // Executa o ataque do herói atual (currentHero) contra o vilão (heroes.get(1))
-                    String attack = heroes.get(currentHero).attack(enemies.get(currentEnemy));
-                    // Atualiza o texto para mostrar o ataque realizado e o dano causado
-                    texts.setText(attack);
-                    action = true;
-                    millis2 = clock.millis();
+                if (!isPaused) {
+                    if (!action) {
+                        // Executa o ataque do herói atual (currentHero) contra o vilão (heroes.get(1))
+                        String attack = heroes.get(currentHero).attack(enemies.get(currentEnemy));
+                        // Atualiza o texto para mostrar o ataque realizado e o dano causado
+                        texts.setText(attack);
+                        action = true;
+                        millis2 = clock.millis();
+
+                    }
                 }
             }
+
         });
 
         // Botão de defesa
         buttons.get(1).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (!action) {
-                    // Executa a defesa do herói atual (currentHero)
-                    String defense = heroes.get(currentHero).defend();
-                    // Atualiza o texto para mostrar que o herói atual defendeu contra o vilão
-                    texts.setText(defense);
-                    action = true;
-                    millis2 = clock.millis();
+                if (!isPaused) {
+                    if (!action) {
+                        // Executa a defesa do herói atual (currentHero)
+                        String defense = heroes.get(currentHero).defend();
+                        // Atualiza o texto para mostrar que o herói atual defendeu contra o vilão
+                        texts.setText(defense);
+                        action = true;
+                        millis2 = clock.millis();
+
+
+                    }
                 }
             }
         });
@@ -259,6 +267,7 @@ public class MainFrame extends JFrame implements Runnable {
 
                 // Obtém o herói atual
                 Character currentCharacter = heroes.get(currentHero);
+                if (!isPaused) {
                 if (currentCharacter.getPowerCharge() >= 100 && !action) {
                     // Verifica se o herói atual é uma instância de Valentina
                     if (currentCharacter instanceof Valentina) {
@@ -322,6 +331,7 @@ public class MainFrame extends JFrame implements Runnable {
                         action = true;
                         millis2 = clock.millis();
                     }
+                }
                 } else if (!action) {
                     texts.setText("Power charge is at " + currentCharacter.getPowerCharge() + "%!");
                 }
@@ -331,25 +341,28 @@ public class MainFrame extends JFrame implements Runnable {
         // Botão de troca
         buttons.get(3).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (!action) {
-                    // Cria um PopUp para selecionar um personagem para troca
-                    PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, false);
-                    popUp.setVisible(true); // Exibe o diálogo modal
-                    // Obtém o personagem selecionado no PopUp
-                    Character selectedCharacter = popUp.getSelectedCharacter();
-                    // Se um personagem foi selecionado
-                    if (selectedCharacter != null) {
-                        // Atualiza o índice do herói atual para o personagem selecionado
-                        currentHero = heroes.indexOf(selectedCharacter);
-                        // Atualiza as imagens e outras representações gráficas conforme necessário
-                        repaint(); // Redesenha a tela após a troca de personagem
-                        // Atualiza o texto para mostrar que o herói atual foi trocado
-                        texts.setText("Swapped to " + selectedCharacter.getName() + "!");
-                    }
+                if (!isPaused) {
+                    if (!action) {
+                        // Cria um PopUp para selecionar um personagem para troca
+                        PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, false);
+                        popUp.setVisible(true); // Exibe o diálogo modal
+                        // Obtém o personagem selecionado no PopUp
+                        Character selectedCharacter = popUp.getSelectedCharacter();
+                        // Se um personagem foi selecionado
+                        if (selectedCharacter != null) {
+                            // Atualiza o índice do herói atual para o personagem selecionado
+                            currentHero = heroes.indexOf(selectedCharacter);
+                            // Atualiza as imagens e outras representações gráficas conforme necessário
+                            repaint(); // Redesenha a tela após a troca de personagem
+                            // Atualiza o texto para mostrar que o herói atual foi trocado
+                            texts.setText("Swapped to " + selectedCharacter.getName() + "!");
+                        }
 
-                    action = true;
-                    millis2 = clock.millis();
-                    click.play();
+                        action = true;
+                        millis2 = clock.millis();
+                        click.play();
+
+                    }
                 }
             }
         });
@@ -638,7 +651,7 @@ public class MainFrame extends JFrame implements Runnable {
         //Deixa os gifs animados
         //A lógica de progressão do jogo deve ser implementada aqui
         while (true) {
-            if (levels == -2) {
+            if (levels == -2 ) {
                     for (int i = 0; i < 200; i++) {
                         menuPane.repaint();
                         try {
@@ -671,6 +684,7 @@ public class MainFrame extends JFrame implements Runnable {
                 }
 
                 millis1 = clock.millis();
+
                 //Caso uma ação aconteça (botão seja pressionado), passa o round pro inimigo
                 //Se o boss estiver com o poder especial completo, usa o poder especial
                 //Se não, tem 75% de chance de atacar e 25% de defender
@@ -692,12 +706,12 @@ public class MainFrame extends JFrame implements Runnable {
                                 texts.setText(attack);
                         }
                     }
-                    if (isPaused)
-                        continue;
                     action = false;
                 }
-                if (isPaused)
+
+                if (isPaused) {
                     continue;
+                }
 
                 //Se zerar a vida do inimigo, reinicia o nível
                 if ((enemies.get(currentEnemy).getHealth() <= 0 && isAncestorOf(division)) || isAncestorOf(transitionPane)) {
@@ -772,6 +786,7 @@ public class MainFrame extends JFrame implements Runnable {
                     levels++;
                     texts.setText("Level passed!");
                     action = false;
+
                 }
 
                 //Personagem que ainda está vivo (caso algum morra, será trocado para esse)
