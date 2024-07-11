@@ -37,13 +37,15 @@ public class Image {
                 this.width, this.height, null);
     }
 
-    //Dá resize na imagem -> Pode aumentar ou diminuir de tamanho
-    public void scale(double scale) {
-        this.width = (int) (width * scale);
-        this.height = (int) (height * scale);
-    }
-
     public void setImg(ImageIcon img) {
         this.img = img;
+    }
+
+    public void setPosition_x(int position_x) {
+        this.position_x = position_x;
+    }
+
+    public void setPosition_y(int position_y) {
+        this.position_y = position_y;
     }
 }
