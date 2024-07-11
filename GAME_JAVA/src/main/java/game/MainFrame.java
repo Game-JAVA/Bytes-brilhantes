@@ -38,6 +38,8 @@ public class MainFrame extends JFrame implements Runnable {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     togglePause();
+                } else if (isPaused) {
+                    togglePause(); // Qualquer tecla para retomar
                 }
             }
         });
@@ -222,41 +224,31 @@ public class MainFrame extends JFrame implements Runnable {
         bottomDivision.setLeftComponent(texts);
         bottomDivision.setRightComponent(buttonsPanel);
 
-
         // Ação de cada botão
         // Botão de ataque
         buttons.get(0).addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
-                if (!isPaused) {
-                    if (!action) {
-                        // Executa o ataque do herói atual (currentHero) contra o vilão (heroes.get(1))
-                        String attack = heroes.get(currentHero).attack(enemies.get(currentEnemy));
-                        // Atualiza o texto para mostrar o ataque realizado e o dano causado
-                        texts.setText(attack);
-                        action = true;
-                        millis2 = clock.millis();
-
-                    }
+                if (!action) {
+                    // Executa o ataque do herói atual (currentHero) contra o vilão (heroes.get(1))
+                    String attack = heroes.get(currentHero).attack(enemies.get(currentEnemy));
+                    // Atualiza o texto para mostrar o ataque realizado e o dano causado
+                    texts.setText(attack);
+                    action = true;
+                    millis2 = clock.millis();
                 }
             }
-
         });
 
         // Botão de defesa
         buttons.get(1).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (!isPaused) {
-                    if (!action) {
-                        // Executa a defesa do herói atual (currentHero)
-                        String defense = heroes.get(currentHero).defend();
-                        // Atualiza o texto para mostrar que o herói atual defendeu contra o vilão
-                        texts.setText(defense);
-                        action = true;
-                        millis2 = clock.millis();
-
-
-                    }
+                if (!action) {
+                    // Executa a defesa do herói atual (currentHero)
+                    String defense = heroes.get(currentHero).defend();
+                    // Atualiza o texto para mostrar que o herói atual defendeu contra o vilão
+                    texts.setText(defense);
+                    action = true;
+                    millis2 = clock.millis();
                 }
             }
         });
@@ -267,7 +259,6 @@ public class MainFrame extends JFrame implements Runnable {
 
                 // Obtém o herói atual
                 Character currentCharacter = heroes.get(currentHero);
-                if (!isPaused) {
                 if (currentCharacter.getPowerCharge() >= 100 && !action) {
                     // Verifica se o herói atual é uma instância de Valentina
                     if (currentCharacter instanceof Valentina) {
@@ -331,7 +322,6 @@ public class MainFrame extends JFrame implements Runnable {
                         action = true;
                         millis2 = clock.millis();
                     }
-                }
                 } else if (!action) {
                     texts.setText("Power charge is at " + currentCharacter.getPowerCharge() + "%!");
                 }
@@ -341,28 +331,25 @@ public class MainFrame extends JFrame implements Runnable {
         // Botão de troca
         buttons.get(3).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (!isPaused) {
-                    if (!action) {
-                        // Cria um PopUp para selecionar um personagem para troca
-                        PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, false);
-                        popUp.setVisible(true); // Exibe o diálogo modal
-                        // Obtém o personagem selecionado no PopUp
-                        Character selectedCharacter = popUp.getSelectedCharacter();
-                        // Se um personagem foi selecionado
-                        if (selectedCharacter != null) {
-                            // Atualiza o índice do herói atual para o personagem selecionado
-                            currentHero = heroes.indexOf(selectedCharacter);
-                            // Atualiza as imagens e outras representações gráficas conforme necessário
-                            repaint(); // Redesenha a tela após a troca de personagem
-                            // Atualiza o texto para mostrar que o herói atual foi trocado
-                            texts.setText("Swapped to " + selectedCharacter.getName() + "!");
-                        }
-
-                        action = true;
-                        millis2 = clock.millis();
-                        click.play();
-
+                if (!action) {
+                    // Cria um PopUp para selecionar um personagem para troca
+                    PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, false);
+                    popUp.setVisible(true); // Exibe o diálogo modal
+                    // Obtém o personagem selecionado no PopUp
+                    Character selectedCharacter = popUp.getSelectedCharacter();
+                    // Se um personagem foi selecionado
+                    if (selectedCharacter != null) {
+                        // Atualiza o índice do herói atual para o personagem selecionado
+                        currentHero = heroes.indexOf(selectedCharacter);
+                        // Atualiza as imagens e outras representações gráficas conforme necessário
+                        repaint(); // Redesenha a tela após a troca de personagem
+                        // Atualiza o texto para mostrar que o herói atual foi trocado
+                        texts.setText("Swapped to " + selectedCharacter.getName() + "!");
                     }
+
+                    action = true;
+                    millis2 = clock.millis();
+                    click.play();
                 }
             }
         });
@@ -651,9 +638,81 @@ public class MainFrame extends JFrame implements Runnable {
         //Deixa os gifs animados
         //A lógica de progressão do jogo deve ser implementada aqui
         while (true) {
-            if (levels == -2 ) {
-                    for (int i = 0; i < 200; i++) {
-                        menuPane.repaint();
+            if (levels == -2) {
+                for (int i = 0; i < 200; i++) {
+                    menuPane.repaint();
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                menu.setImg(new ImageIcon(Objects.requireNonNull
+                        (this.getClass().getResource("img/MenuBlink.gif"))));
+                levels++;
+            }
+
+            //Atualiza as imagens das barras de vida e do herói atual
+            heroHealth.setImg(new ImageIcon(Objects.requireNonNull
+                    (this.getClass().getResource(hpBar(heroes.get(currentHero))))));
+            enemyHealth.setImg(new ImageIcon(Objects.requireNonNull
+                    (this.getClass().getResource(hpBar(enemies.get(currentEnemy))))));
+            heroDefense.setImg(new ImageIcon(Objects.requireNonNull
+                    (this.getClass().getResource(defenseBar(heroes.get(currentHero))))));
+            enemyDefense.setImg(new ImageIcon(Objects.requireNonNull
+                    (this.getClass().getResource(defenseBar(enemies.get(currentEnemy))))));
+            if (specialGifLabel.isVisible()) {
+                heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull(
+                        getClass().getResource("img/" + heroes.get(currentHero).getName() + "_Poder.gif"))));
+            } else {
+                heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull(
+                        getClass().getResource("img/" + heroes.get(currentHero).getName() + ".gif"))));
+            }
+
+            millis1 = clock.millis();
+            //Caso uma ação aconteça (botão seja pressionado), passa o round pro inimigo
+            //Se o boss estiver com o poder especial completo, usa o poder especial
+            //Se não, tem 75% de chance de atacar e 25% de defender
+            if (action && (millis1 - millis2) > 2000) {
+                if (enemies.get(currentEnemy).getPowerCharge() >= 100 && enemies.get(currentEnemy).getImprisioned() == 0) {
+                    enemies.get(currentEnemy).specialPower(heroes.get(currentHero));
+                    texts.setText(enemies.get(currentEnemy).getName() + " stole " + heroes.get(currentHero).getName()
+                            + "'s own blood!");
+                } else {
+                    int decision = r.nextInt(0, 4);
+                    switch (decision) {
+                        case 3:
+                            String defense = enemies.get(currentEnemy).defend();
+                            texts.setText(defense);
+                            break;
+
+                        default:
+                            String attack = enemies.get(currentEnemy).attack(heroes.get(currentHero));
+                            texts.setText(attack);
+                    }
+                }
+                if (isPaused)
+                    continue;
+                action = false;
+            }
+            if (isPaused)
+                continue;
+
+            //Se zerar a vida do inimigo, reinicia o nível
+            if ((enemies.get(currentEnemy).getHealth() <= 0 && isAncestorOf(division)) || isAncestorOf(transitionPane)) {
+                if (isAncestorOf(division) && currentEnemy < 3)
+                    currentEnemy++;
+
+                if (levels < 3) {
+                    level.setStop(true);
+
+                    remove(division);
+                    add(transitionPane);
+
+                    //Transição de nível, que dura 1500ms (300 iterações * 5ms)
+                    for (int i = 0; i < 300; i++) {
+                        transitionPane.updateUI();
                         try {
                             Thread.sleep(5);
                         } catch (InterruptedException e) {
@@ -661,175 +720,100 @@ public class MainFrame extends JFrame implements Runnable {
                         }
                     }
 
-                    menu.setImg(new ImageIcon(Objects.requireNonNull
-                            (this.getClass().getResource("img/MenuBlink.gif"))));
-                    levels++;
-                }
+                    remove(transitionPane);
+                    add(division);
 
-                //Atualiza as imagens das barras de vida e do herói atual
-                heroHealth.setImg(new ImageIcon(Objects.requireNonNull
-                        (this.getClass().getResource(hpBar(heroes.get(currentHero))))));
-                enemyHealth.setImg(new ImageIcon(Objects.requireNonNull
-                        (this.getClass().getResource(hpBar(enemies.get(currentEnemy))))));
-                heroDefense.setImg(new ImageIcon(Objects.requireNonNull
-                        (this.getClass().getResource(defenseBar(heroes.get(currentHero))))));
-                enemyDefense.setImg(new ImageIcon(Objects.requireNonNull
-                        (this.getClass().getResource(defenseBar(enemies.get(currentEnemy))))));
-                if (specialGifLabel.isVisible()) {
-                    heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull(
-                            getClass().getResource("img/" + heroes.get(currentHero).getName() + "_Poder.gif"))));
+                    level.setStop(false);
+
+                    if (levels < 2)
+                        level.play();
+                    else
+                        boss.play();
                 } else {
-                    heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull(
-                            getClass().getResource("img/" + heroes.get(currentHero).getName() + ".gif"))));
-                }
-
-                millis1 = clock.millis();
-
-                //Caso uma ação aconteça (botão seja pressionado), passa o round pro inimigo
-                //Se o boss estiver com o poder especial completo, usa o poder especial
-                //Se não, tem 75% de chance de atacar e 25% de defender
-                if (action && (millis1 - millis2) > 2000) {
-                    if (enemies.get(currentEnemy).getPowerCharge() >= 100 && enemies.get(currentEnemy).getImprisioned() == 0) {
-                        enemies.get(currentEnemy).specialPower(heroes.get(currentHero));
-                        texts.setText(enemies.get(currentEnemy).getName() + " stole " + heroes.get(currentHero).getName()
-                                + "'s own blood!");
-                    } else {
-                        int decision = r.nextInt(0, 4);
-                        switch (decision) {
-                            case 3:
-                                String defense = enemies.get(currentEnemy).defend();
-                                texts.setText(defense);
-                                break;
-
-                            default:
-                                String attack = enemies.get(currentEnemy).attack(heroes.get(currentHero));
-                                texts.setText(attack);
-                        }
-                    }
-                    action = false;
-                }
-
-                if (isPaused) {
-                    continue;
-                }
-
-                //Se zerar a vida do inimigo, reinicia o nível
-                if ((enemies.get(currentEnemy).getHealth() <= 0 && isAncestorOf(division)) || isAncestorOf(transitionPane)) {
-                    if (isAncestorOf(division) && currentEnemy < 3)
-                        currentEnemy++;
-
-                    if (levels < 3) {
-                        level.setStop(true);
-
-                        remove(division);
-                        add(transitionPane);
-
-                        //Transição de nível, que dura 1500ms (300 iterações * 5ms)
-                        for (int i = 0; i < 300; i++) {
-                            transitionPane.updateUI();
-                            try {
-                                Thread.sleep(5);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-
-                        remove(transitionPane);
-                        add(division);
-
-                        level.setStop(false);
-
-                        if (levels < 2)
-                            level.play();
-                        else
-                            boss.play();
-                    } else {
-                        remove(division);
-                        add(victoryPane);
-
-                        level.setStop(true);
-                        boss.setStop(true);
-                        victorySound.play();
-                    }
-
-
-                    //Fecha e abre a tela para atualizar
-                    setVisible(false);
-                    setVisible(true);
-
-                    //Muda o background de acordo com o nível atual
-                    switch (levels) {
-                        case -1:
-                            backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
-                                    getResource("img/Background1.png"))));
-                            break;
-
-                        case 0:
-                            backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
-                                    getResource("img/Background2.png"))));
-                            break;
-
-                        case 1:
-                            backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
-                                    getResource("img/Background3.png"))));
-                            break;
-
-                        case 2:
-                            backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
-                                    getResource("img/BackgroundBoss.png"))));
-                            break;
-
-                        default:
-                            break;
-                    }
-
-                    levels++;
-                    texts.setText("Level passed!");
-                    action = false;
-
-                }
-
-                //Personagem que ainda está vivo (caso algum morra, será trocado para esse)
-                int alive = currentHero;
-                //Caso todos os heróis tenham morrido, aparece a tela de derrota
-                int deads = 0;
-                for (Character hero : heroes) {
-                    if (hero.getHealth() <= 0) {
-                        deads++;
-                    } else {
-                        alive = heroes.indexOf(hero);
-                    }
-                }
-
-                //Se estiver na tela de combate e os 4 heróis estão mortos, vai pra tela de derrota
-                if (deads == 4 && isAncestorOf(division)) {
                     remove(division);
-                    add(defeatPane);
+                    add(victoryPane);
 
                     level.setStop(true);
-                    defeatSound.play();
-
-                    setVisible(false);
-                    setVisible(true);
-                } else if (heroes.get(currentHero).getHealth() <= 0) {    //Troca automaticamente de herói caso o atual morra
-                    texts.setText("Hero: " + heroes.get(currentHero).getName() + " is dead!");
-                    currentHero = alive;
+                    boss.setStop(true);
+                    victorySound.play();
                 }
 
-                //Atualiza as animações na tela
-                division.repaint();
-                victoryPane.repaint();
-                menuPane.repaint();
-                instructionsPane.repaint();
-                defeatPane.repaint();
 
-                // Unidade de tempo da animação
-                try {
-                    Thread.sleep(5);
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
+                //Fecha e abre a tela para atualizar
+                setVisible(false);
+                setVisible(true);
+
+                //Muda o background de acordo com o nível atual
+                switch (levels) {
+                    case -1:
+                        backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
+                                getResource("img/Background1.png"))));
+                        break;
+
+                    case 0:
+                        backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
+                                getResource("img/Background2.png"))));
+                        break;
+
+                    case 1:
+                        backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
+                                getResource("img/Background3.png"))));
+                        break;
+
+                    case 2:
+                        backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
+                                getResource("img/BackgroundBoss.png"))));
+                        break;
+
+                    default:
+                        break;
                 }
+
+                levels++;
+                texts.setText("Level passed!");
+                action = false;
+            }
+
+            //Personagem que ainda está vivo (caso algum morra, será trocado para esse)
+            int alive = currentHero;
+            //Caso todos os heróis tenham morrido, aparece a tela de derrota
+            int deads = 0;
+            for (Character hero : heroes) {
+                if (hero.getHealth() <= 0) {
+                    deads++;
+                } else {
+                    alive = heroes.indexOf(hero);
+                }
+            }
+
+            //Se estiver na tela de combate e os 4 heróis estão mortos, vai pra tela de derrota
+            if (deads == 4 && isAncestorOf(division)) {
+                remove(division);
+                add(defeatPane);
+
+                level.setStop(true);
+                defeatSound.play();
+
+                setVisible(false);
+                setVisible(true);
+            } else if (heroes.get(currentHero).getHealth() <= 0) {    //Troca automaticamente de herói caso o atual morra
+                texts.setText("Hero: " + heroes.get(currentHero).getName() + " is dead!");
+                currentHero = alive;
+            }
+
+            //Atualiza as animações na tela
+            division.repaint();
+            victoryPane.repaint();
+            menuPane.repaint();
+            instructionsPane.repaint();
+            defeatPane.repaint();
+
+            // Unidade de tempo da animação
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }
-
