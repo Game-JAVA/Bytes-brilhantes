@@ -970,6 +970,7 @@ public class MainFrame extends JFrame implements Runnable {
             if (isPaused)
                 continue;
 
+
             //Atualiza as animações na tela
             division.repaint();
             victoryPane.repaint();
