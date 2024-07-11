@@ -709,7 +709,7 @@ public class MainFrame extends JFrame implements Runnable {
         //A lógica de progressão do jogo deve ser implementada aqui
         while (true) {
             if(levels == -2) {
-                for(int i = 0; i < 200; i++) {
+                for(int i = 0; i < 720; i++) {
                     menuPane.repaint();
                     try {
                         Thread.sleep(5);
