@@ -58,6 +58,7 @@ public class MainFrame extends JFrame implements Runnable {
                 }
             }
         });
+
         rootPane.setFocusable(true);
 
         rootPane.requestFocus();
@@ -171,9 +172,9 @@ public class MainFrame extends JFrame implements Runnable {
     }
 
     private String defenseBar(Character c) {
-        if(c.getDefense() >= 15) {
+        if(c.getDefense() >= 10) {
             return "img/Defense/2.png";
-        } else if(c.getDefense() >= 10 && c.getDefense() > 0) {
+        } else if(c.getDefense() >= 5 && c.getDefense() > 0) {
             return "img/Defense/2-1.png";
         } else {
             return "img/Defense/2-2.png";
@@ -193,24 +194,24 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Array onde os heróis são instanciados
         ArrayList<game.Character> heroes = new ArrayList<>();
-        heroes.add(new Bruno(100, 11, 7, 50, "Bruno",
+        heroes.add(new Bruno(100, 7, 3, 50, "Bruno",
                 "img/Bruno.gif", 50, 200, "sound/bruno_special.wav"));
-        heroes.add(new Faria(100, 15, 5, 20, "Faria",
+        heroes.add(new Faria(100, 10, 5, 40, "Faria",
                 "img/Faria.gif", 50, 200, "sound/faria_special.wav"));
         heroes.add(new Leticia(100, 20, -2, 40, "Leticia",
                 "img/Leticia.gif", 50, 200, "sound/leticia_special.wav"));
-        heroes.add(new Valentina(100, 15, 0, 20, "Valentina",
+        heroes.add(new Valentina(100, 10, 0, 20, "Valentina",
                 "img/Valentina.gif", 50, 200, "sound/valentina_special.wav"));
 
         //Array onde os vilões são instanciados
         ArrayList<game.Character> enemies = new ArrayList<>();
-        enemies.add(new Enemy(100, 12, 5, 0, "Banished Knight",
+        enemies.add(new Enemy(100, 14, 0, 0, "Banished Knight",
                 "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 14, 5, 0, "Dragon Lord",
+        enemies.add(new Enemy(100, 16, 0, 0, "Dragon Lord",
                 "img/Inimigo2.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 16, 5, 0, "Count Vamp",
+        enemies.add(new Enemy(100, 18, 0, 0, "Count Vamp",
                 "img/Inimigo3.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Boss(100 , 20, 5, 100, "Lord of Death",
+        enemies.add(new Boss(100 , 20, 0, 100, "Lord of Death",
                 "img/Chefe.gif", 975, 100, "sound/boss_special.wav"));
 
 
@@ -247,183 +248,182 @@ public class MainFrame extends JFrame implements Runnable {
         bottomDivision.setLeftComponent(texts);
         bottomDivision.setRightComponent(buttonsPanel);
 
+        // Ação de cada botão
+        // Botão de ataque
+        buttons.get(0).addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(!action) {
+                    cleanNumbers();
 
-            // Ação de cada botão
-            // Botão de ataque
-            buttons.get(0).addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    if (!action) {
+                    // Executa o ataque do herói atual (currentHero) contra o vilão (heroes.get(1))
+                    int damage = heroes.get(currentHero).attack(enemies.get(currentEnemy));
+                    // Atualiza o texto para mostrar o ataque realizado e o dano causado
+                    texts.setText(heroes.get(currentHero).getName() + " attacked " +
+                            enemies.get(currentEnemy).getName() + ", dealing " + damage + " damage!");
+
+                    int unit = damage % 10;
+                    int decimal = damage / 10;
+
+                    damagePointsDec.setPosition_x(970);
+                    damagePointsDec.setPosition_y(100);
+                    damagePointsUnit.setPosition_x(990);
+                    damagePointsUnit.setPosition_y(100);
+
+                    //Atualiza as imagens de dano
+                    damagePointsUnit.setImg(new ImageIcon(Objects.requireNonNull
+                            (this.getClass().getResource("img/Attack/" + unit + ".png"))));
+                    damagePointsDec.setImg(new ImageIcon(Objects.requireNonNull
+                            (this.getClass().getResource("img/Attack/" + decimal + ".png"))));
+
+                    millis2 = clock.millis();
+                    action = true;
+                }
+                requestFocusOnFrame();
+            }
+        });
+
+        // Botão de defesa
+        buttons.get(1).addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(!action) {
+                    cleanNumbers();
+
+                    // Executa a defesa do herói atual (currentHero)
+                    int defense = heroes.get(currentHero).defend();
+                    // Atualiza o texto para mostrar que o herói atual defendeu contra o vilão
+                    texts.setText(heroes.get(currentHero).getName() + " defended itself by " + defense + " points!");
+
+                    int unit = defense % 10;
+                    int decimal = defense / 10;
+
+                    defendPointsDec.setPosition_x(120);
+                    defendPointsDec.setPosition_y(160);
+                    defendPointsUnit.setPosition_x(140);
+                    defendPointsUnit.setPosition_y(160);
+
+                    //Atualiza as imagens de defesa
+                    defendPointsUnit.setImg(new ImageIcon(Objects.requireNonNull
+                            (this.getClass().getResource("img/Defend/" + unit + ".png"))));
+                    defendPointsDec.setImg(new ImageIcon(Objects.requireNonNull
+                            (this.getClass().getResource("img/Defend/" + decimal + ".png"))));
+
+                    action = true;
+                    millis2 = clock.millis();
+                }
+                requestFocusOnFrame();
+            }
+        });
+
+        // Botão de poder especial
+        buttons.get(2).addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Obtém o herói atual
+                Character currentCharacter = heroes.get(currentHero);
+                if(currentCharacter.getPowerCharge() >= 100 && !action){
+                    // Verifica se o herói atual é uma instância de Valentina
+                    if (currentCharacter instanceof Valentina) {
                         cleanNumbers();
 
-                        // Executa o ataque do herói atual (currentHero) contra o vilão (heroes.get(1))
-                        int damage = heroes.get(currentHero).attack(enemies.get(currentEnemy));
-                        // Atualiza o texto para mostrar o ataque realizado e o dano causado
-                        texts.setText(heroes.get(currentHero).getName() + " attacked " +
-                                enemies.get(currentEnemy).getName() + ", dealing " + damage + " damage!");
+                        // Cria um PopUp para selecionar um personagem para reviver
+                        PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, true);
+                        popUp.setVisible(true); // Exibe o diálogo modal
 
-                        int unit = damage % 10;
-                        int decimal = damage / 10;
+                        // Obtém o personagem selecionado no PopUp
+                        Character selectedCharacter = popUp.getSelectedCharacter();
 
-                        damagePointsDec.setPosition_x(970);
-                        damagePointsDec.setPosition_y(100);
-                        damagePointsUnit.setPosition_x(990);
-                        damagePointsUnit.setPosition_y(100);
+                        // Se um personagem foi selecionado e está com a saúde menor ou igual a 0
+                        if (selectedCharacter != null && selectedCharacter.getHealth() <= 0) {
+                            // Valentina usa seu poder especial para reviver o personagem
+                            currentCharacter.specialPower(selectedCharacter);
+                            // Atualiza o texto para mostrar que Valentina reviveu o personagem
+                            texts.setText(currentCharacter.getName() + " revived " + selectedCharacter.getName() + "!");
+                            // Define a saúde do personagem revivido para 100
+                            selectedCharacter.setHealth(100);
+                            //Reseta o poder especial do personagem revivido
+                            selectedCharacter.setPowerCharge(0);
 
-                        //Atualiza as imagens de dano
-                        damagePointsUnit.setImg(new ImageIcon(Objects.requireNonNull
-                                (this.getClass().getResource("img/Attack/" + unit + ".png"))));
-                        damagePointsDec.setImg(new ImageIcon(Objects.requireNonNull
-                                (this.getClass().getResource("img/Attack/" + decimal + ".png"))));
-
-                        millis2 = clock.millis();
-                        action = true;
-                    }
-                    requestFocusOnFrame();
-                }
-            });
-
-            // Botão de defesa
-            buttons.get(1).addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    if (!action) {
-                        cleanNumbers();
-
-                        // Executa a defesa do herói atual (currentHero)
-                        int defense = heroes.get(currentHero).defend();
-                        // Atualiza o texto para mostrar que o herói atual defendeu contra o vilão
-                        texts.setText(heroes.get(currentHero).getName() + " defended itself by " + defense + " points!");
-
-                        int unit = defense % 10;
-                        int decimal = defense / 10;
-
-                        defendPointsDec.setPosition_x(120);
-                        defendPointsDec.setPosition_y(160);
-                        defendPointsUnit.setPosition_x(140);
-                        defendPointsUnit.setPosition_y(160);
-
-                        //Atualiza as imagens de defesa
-                        defendPointsUnit.setImg(new ImageIcon(Objects.requireNonNull
-                                (this.getClass().getResource("img/Defend/" + unit + ".png"))));
-                        defendPointsDec.setImg(new ImageIcon(Objects.requireNonNull
-                                (this.getClass().getResource("img/Defend/" + decimal + ".png"))));
-
-                        action = true;
-                        millis2 = clock.millis();
-                    }
-                    requestFocusOnFrame();
-                }
-            });
-
-            // Botão de poder especial
-            buttons.get(2).addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    // Obtém o herói atual
-                    Character currentCharacter = heroes.get(currentHero);
-                    if (currentCharacter.getPowerCharge() >= 100 && !action) {
-                        // Verifica se o herói atual é uma instância de Valentina
-                        if (currentCharacter instanceof Valentina) {
-                            cleanNumbers();
-
-                            // Cria um PopUp para selecionar um personagem para reviver
-                            PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, true);
-                            popUp.setVisible(true); // Exibe o diálogo modal
-
-                            // Obtém o personagem selecionado no PopUp
-                            Character selectedCharacter = popUp.getSelectedCharacter();
-
-                            // Se um personagem foi selecionado e está com a saúde menor ou igual a 0
-                            if (selectedCharacter != null && selectedCharacter.getHealth() <= 0) {
-                                // Valentina usa seu poder especial para reviver o personagem
-                                currentCharacter.specialPower(selectedCharacter);
-                                // Atualiza o texto para mostrar que Valentina reviveu o personagem
-                                texts.setText(currentCharacter.getName() + " revived " + selectedCharacter.getName() + "!");
-                                // Define a saúde do personagem revivido para 100
-                                selectedCharacter.setHealth(100);
-
-                                // Exibe o GIF especial no JLabel e define sua posição
-                                specialGifLabel.setVisible(true);
-
-                                // Remove o GIF especial após um tempo (3 segundos, por exemplo)
-                                Timer timer = new Timer(2000, new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        specialGifLabel.setVisible(false);
-
-                                    }
-                                });
-                                timer.setRepeats(false);
-                                timer.start();
-                                action = true;
-                                millis2 = clock.millis();
-                            } else {
-                                texts.setText("There is no dead allies!");
-                            }
-                        } else {
-                            cleanNumbers();
-
-                            // Se não for Valentina, usa o poder especial contra o vilão
-                            currentCharacter.specialPower(enemies.get(currentEnemy));
-                            // Atualiza o texto para mostrar que o herói usou seu ataque especial no vilão
-                            texts.setText(currentCharacter.getName() + " used special attack on " +
-                                    enemies.get(currentEnemy).getName() + "!");
-
+                            // Exibe o GIF especial no JLabel e define sua posição
                             specialGifLabel.setVisible(true);
 
-                            // Remove o GIF especial após um tempo (3 segundos)
-                            // Cria um novo timer que executará uma ação após 3000 milissegundos (3 segundos)
+                            // Remove o GIF especial após um tempo (3 segundos, por exemplo)
                             Timer timer = new Timer(2000, new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
-                                    // Define o label do GIF especial como invisível quando o timer dispara
                                     specialGifLabel.setVisible(false);
+
                                 }
                             });
-
-                            // Define que o timer não deve repetir a ação; ele só será executado uma vez
                             timer.setRepeats(false);
-                            // Inicia o timer. Após 3 segundos, a ação definida acima será executada
                             timer.start();
-
                             action = true;
                             millis2 = clock.millis();
+                        } else {
+                            texts.setText("There is no dead allies!");
                         }
-                    } else if (!action) {
-                        texts.setText("Power charge is at " + currentCharacter.getPowerCharge() + "%!");
-                    }
-                    requestFocusOnFrame();
-                }
-            });
-
-            // Botão de troca
-            buttons.get(3).addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    if (!action) {
+                    } else {
                         cleanNumbers();
 
-                        // Cria um PopUp para selecionar um personagem para troca
-                        PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, false);
-                        popUp.setVisible(true); // Exibe o diálogo modal
-                        // Obtém o personagem selecionado no PopUp
-                        Character selectedCharacter = popUp.getSelectedCharacter();
-                        // Se um personagem foi selecionado
-                        if (selectedCharacter != null) {
-                            // Atualiza o índice do herói atual para o personagem selecionado
-                            currentHero = heroes.indexOf(selectedCharacter);
-                            // Atualiza as imagens e outras representações gráficas conforme necessário
-                            repaint(); // Redesenha a tela após a troca de personagem
-                            // Atualiza o texto para mostrar que o herói atual foi trocado
-                            texts.setText("Swapped to " + selectedCharacter.getName() + "!");
-                        }
+                        // Se não for Valentina, usa o poder especial contra o vilão
+                        currentCharacter.specialPower(enemies.get(currentEnemy));
+                        // Atualiza o texto para mostrar que o herói usou seu ataque especial no vilão
+                        texts.setText(currentCharacter.getName() + " used special attack on " +
+                                enemies.get(currentEnemy).getName() + "!");
+
+                        specialGifLabel.setVisible(true);
+
+                        // Remove o GIF especial após um tempo (3 segundos)
+                        // Cria um novo timer que executará uma ação após 3000 milissegundos (3 segundos)
+                        Timer timer = new Timer(2000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                // Define o label do GIF especial como invisível quando o timer dispara
+                                specialGifLabel.setVisible(false);
+                            }
+                        });
+
+                        // Define que o timer não deve repetir a ação; ele só será executado uma vez
+                        timer.setRepeats(false);
+                        // Inicia o timer. Após 3 segundos, a ação definida acima será executada
+                        timer.start();
 
                         action = true;
                         millis2 = clock.millis();
-
-                        click.play();
                     }
-                    requestFocusOnFrame();
+                } else if(!action) {
+                    texts.setText("Power charge is at " + currentCharacter.getPowerCharge() + "%!");
                 }
-            });
+                requestFocusOnFrame();
+            }
+        });
 
+        // Botão de troca
+        buttons.get(3).addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(!action) {
+                    cleanNumbers();
+
+                    // Cria um PopUp para selecionar um personagem para troca
+                    PopUp popUp = new PopUp((Frame) SwingUtilities.getWindowAncestor(MainFrame.this), heroes, currentHero, false);
+                    popUp.setVisible(true); // Exibe o diálogo modal
+                    // Obtém o personagem selecionado no PopUp
+                    Character selectedCharacter = popUp.getSelectedCharacter();
+                    // Se um personagem foi selecionado
+                    if (selectedCharacter != null) {
+                        // Atualiza o índice do herói atual para o personagem selecionado
+                        currentHero = heroes.indexOf(selectedCharacter);
+                        // Atualiza as imagens e outras representações gráficas conforme necessário
+                        repaint(); // Redesenha a tela após a troca de personagem
+                        // Atualiza o texto para mostrar que o herói atual foi trocado
+                        texts.setText("Swapped to " + selectedCharacter.getName() + "!");
+
+                        action = true;
+                        millis2 = clock.millis();
+                    }
+                    click.play();
+                }
+                requestFocusOnFrame();
+            }
+        });
 
         //Instancia as barras de vida iniciais (começando com 10 de vida)
         Image heroHealth = new Image("img/Health/10.png", 50, 170);
@@ -597,6 +597,7 @@ public class MainFrame extends JFrame implements Runnable {
                         System.exit(0);
                     }
                 }
+
             }
         });
         //Hover do mouse ao passar em cima dos botões
@@ -745,7 +746,6 @@ public class MainFrame extends JFrame implements Runnable {
                 levels++;
             }
 
-
             //Atualiza as imagens das barras de vida e defesa do herói e inimigo atual
             heroHealth.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(hpBar(heroes.get(currentHero))))));
@@ -854,8 +854,6 @@ public class MainFrame extends JFrame implements Runnable {
                 action = false;
             }
 
-
-
             //Se zerar a vida do inimigo, avança o nível
             if((enemies.get(currentEnemy).getHealth() <= 0 && isAncestorOf(division)) || isAncestorOf(transitionPane)) {
                 if(isAncestorOf(division) && currentEnemy < 3)
@@ -930,7 +928,6 @@ public class MainFrame extends JFrame implements Runnable {
                 action = false;
             }
 
-
             //Personagem que ainda está vivo (caso algum morra, será trocado para esse)
             int alive = currentHero;
             //Caso todos os heróis tenham morrido, aparece a tela de derrota
@@ -949,6 +946,7 @@ public class MainFrame extends JFrame implements Runnable {
                 add(defeatPane);
 
                 level.setStop(true);
+                boss.setStop(true);
                 defeatSound.play();
 
                 setVisible(false);
@@ -957,6 +955,17 @@ public class MainFrame extends JFrame implements Runnable {
                 texts.setText("Hero: " + heroes.get(currentHero).getName() +" is dead!");
                 currentHero = alive;
             }
+
+            //Indicador de poder especial, alterando o texto do botão
+            if(heroes.get(currentHero).getPowerCharge() >= 100) {
+                buttons.get(2).setText("SPECIAL READY");
+            } else {
+                buttons.get(2).setText("Special");
+            }
+
+            //Não deixa aumentar o poder especial da leticia caso o inimigo esteja emprisionado
+            if(enemies.get(currentEnemy).getImprisioned() > 0)
+                heroes.get(2).setPowerCharge(0);
 
             if (isPaused)
                 continue;
