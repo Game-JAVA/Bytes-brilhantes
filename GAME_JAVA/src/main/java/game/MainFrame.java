@@ -195,6 +195,7 @@ public class MainFrame extends JFrame implements Runnable {
         enemies.add(new Boss(100 , 20, 5, 100, "Lord of Death",
                 "img/Chefe.gif", 975, 100, "sound/boss_special.wav"));
 
+
         //Painel dos botões
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setOpaque(false);
