@@ -33,6 +33,17 @@ public class MainFrame extends JFrame implements Runnable {
 
     public MainFrame() {
         pauseOverlay = new PauseOverlay();
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    togglePause();
+                }
+            }
+        });
+        setFocusable(true);
+        requestFocus();
+
         JRootPane rootPane = this.getRootPane();
         rootPane.setGlassPane(pauseOverlay);
         pauseOverlay.setVisible(false);
@@ -47,6 +58,7 @@ public class MainFrame extends JFrame implements Runnable {
                 }
             }
         });
+
         rootPane.setFocusable(true);
 
         rootPane.requestFocus();
@@ -61,6 +73,13 @@ public class MainFrame extends JFrame implements Runnable {
         createBufferStrategy(2);
         Thread t = new Thread(this);
         t.start();
+    }
+
+    private void requestFocusOnFrame() {
+        SwingUtilities.invokeLater(() -> {
+            requestFocus();
+            pauseOverlay.requestFocus();
+        });
     }
 
     private void initComponents() {
@@ -259,6 +278,7 @@ public class MainFrame extends JFrame implements Runnable {
                     millis2 = clock.millis();
                     action = true;
                 }
+                requestFocusOnFrame();
             }
         });
 
@@ -290,6 +310,7 @@ public class MainFrame extends JFrame implements Runnable {
                     action = true;
                     millis2 = clock.millis();
                 }
+                requestFocusOnFrame();
             }
         });
 
@@ -348,7 +369,7 @@ public class MainFrame extends JFrame implements Runnable {
                         texts.setText(currentCharacter.getName() + " used special attack on " +
                                 enemies.get(currentEnemy).getName() + "!");
 
-                       specialGifLabel.setVisible(true);
+                        specialGifLabel.setVisible(true);
 
                         // Remove o GIF especial após um tempo (3 segundos)
                         // Cria um novo timer que executará uma ação após 3000 milissegundos (3 segundos)
@@ -371,6 +392,7 @@ public class MainFrame extends JFrame implements Runnable {
                 } else if(!action) {
                     texts.setText("Power charge is at " + currentCharacter.getPowerCharge() + "%!");
                 }
+                requestFocusOnFrame();
             }
         });
 
@@ -399,6 +421,7 @@ public class MainFrame extends JFrame implements Runnable {
                     }
                     click.play();
                 }
+                requestFocusOnFrame();
             }
         });
 
@@ -768,15 +791,15 @@ public class MainFrame extends JFrame implements Runnable {
 
             millis1 = clock.millis();
             //Caso uma ação aconteça (botão seja pressionado), passa o round pro inimigo
-                //Se o boss estiver com o poder especial completo, usa o poder especial
-                //Se não, tem 75% de chance de atacar e 25% de defender
+            //Se o boss estiver com o poder especial completo, usa o poder especial
+            //Se não, tem 75% de chance de atacar e 25% de defender
             if(action && (millis1 - millis2) > 2000) {
                 cleanNumbers();
 
                 if (enemies.get(currentEnemy).getPowerCharge() >= 100 && enemies.get(currentEnemy).getImprisioned() == 0) {
                     enemies.get(currentEnemy).specialPower(heroes.get(currentHero));
                     texts.setText(enemies.get(currentEnemy).getName() + " stole " + heroes.get(currentHero).getName()
-                    + "'s own blood!");
+                            + "'s own blood!");
                 } else {
                     int decision = r.nextInt(0, 4);
                     if (decision == 3) {
@@ -913,7 +936,7 @@ public class MainFrame extends JFrame implements Runnable {
                 if(hero.getHealth() <= 0){
                     deads++;
                 } else {
-                   alive = heroes.indexOf(hero);
+                    alive = heroes.indexOf(hero);
                 }
             }
 
@@ -943,6 +966,10 @@ public class MainFrame extends JFrame implements Runnable {
             //Não deixa aumentar o poder especial da leticia caso o inimigo esteja emprisionado
             if(enemies.get(currentEnemy).getImprisioned() > 0)
                 heroes.get(2).setPowerCharge(0);
+
+            if (isPaused)
+                continue;
+
 
             //Atualiza as animações na tela
             division.repaint();
