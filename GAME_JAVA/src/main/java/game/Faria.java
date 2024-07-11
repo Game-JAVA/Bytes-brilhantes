@@ -15,10 +15,10 @@ public class Faria extends Character {
     public void specialPower(Character c) {
         //Se o poder estiver carregado a 100
         if (this.getPowerCharge() >= 100) {
-            //Vai aumetar o  ataque em 2x
+            //Vai aumetar o  ataque em 3x
             this.setAttack(this.getAttack() * 3);
 
-            // poder especial ativo
+            //Poder especial ativo
             special = true;
             this.sound.play();
 
@@ -28,7 +28,7 @@ public class Faria extends Character {
     }
 
     @Override
-    public String attack(Character c) {
+    public int attack(Character c) {
         if (special) {
             //Se passar de 3 rodadas, o ataque especial para de funcionar
             if (rounds >= 3) {
@@ -56,7 +56,7 @@ public class Faria extends Character {
         } else {
             damage = 0;
             this.setImprisioned(this.getImprisioned() - 1);;
-            return this.getName() + " is imprisioned!";
+            return -1;
         }
 
         //10% de chance de acerto crítico
@@ -65,6 +65,9 @@ public class Faria extends Character {
 
         c.setHealth(c.getHealth() - damage);
 
+        if(c.getHealth() < 0)
+            c.setHealth(0);
+
         //Se o inimigo estiver com pontos de defesa após o combate, retirar sua defesa
         //(pois a defesa dura somente uma rodada)
         if(c.isDefending())
@@ -72,7 +75,7 @@ public class Faria extends Character {
 
         this.hitSound.play();
 
-        return this.getName() + " attacked " + c.getName() + ", dealing " + damage + " damage!";
+        return damage;
     }
 
 }

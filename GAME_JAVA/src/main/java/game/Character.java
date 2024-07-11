@@ -27,7 +27,7 @@ public abstract class Character extends Image {
     }
 
     //Métodos
-    public String attack(Character c) {
+    public int attack(Character c) {
         int damage = 0;
 
         //Verifca se o personagem está aprisionado (poder da Letícia)
@@ -39,7 +39,7 @@ public abstract class Character extends Image {
             increasePowerCharge();
         } else {
             this.imprisioned--;
-            return this.getName() + " is imprisioned!";
+            return -1;
         }
 
         //10% de chance de acerto crítico
@@ -48,6 +48,9 @@ public abstract class Character extends Image {
 
         c.setHealth(c.getHealth() - damage);
 
+        if(c.getHealth() < 0)
+            c.setHealth(0);
+
         //Se o inimigo estiver com pontos de defesa após o combate, retirar sua defesa
             //(pois a defesa dura somente uma rodada)
         if(c.isDefending())
@@ -55,10 +58,10 @@ public abstract class Character extends Image {
 
         this.hitSound.play();
 
-        return this.getName() + " attacked " + c.getName() + ", dealing " + damage + " damage!";
+        return damage;
     }
 
-    public String defend() {
+    public int defend() {
         //Se o personagem já estiver com pontos de defesa, retirar sua defesa
         //(pois a defesa dura somente uma rodada)
         if(this.isDefending())
@@ -72,12 +75,12 @@ public abstract class Character extends Image {
         } else {
             this.defense = 0;
             this.imprisioned--;
-            return this.getName() + " is imprisioned!";
+            return -1;
         }
 
         this.defenseSound.play();
 
-        return this.getName() + " defended itself by " + this.defense + " points!";
+        return defense;
     }
 
     //Retorna true se defesa for maior que 0 (se está com pontos de defesa)
