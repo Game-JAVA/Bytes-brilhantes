@@ -15,10 +15,10 @@ public class Faria extends Character {
     public void specialPower(Character c) {
         //Se o poder estiver carregado a 100
         if (this.getPowerCharge() == 100) {
-            //Vai aumetar o  ataque em 2x
+            //Vai aumentar o  ataque em 2x
             this.setAttack(this.getAttack() * 2);
 
-            // poder especial ativo
+            //Poder especial ativo
             special = true;
             this.sound.play();
         }

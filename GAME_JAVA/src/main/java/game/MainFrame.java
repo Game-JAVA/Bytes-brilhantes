@@ -244,10 +244,10 @@ public class MainFrame extends JFrame implements Runnable {
                     int unit = damage % 10;
                     int decimal = damage / 10;
 
-                    damagePointsDec.setPosition_x(900);
-                    damagePointsDec.setPosition_y(10);
-                    damagePointsUnit.setPosition_x(940);
-                    damagePointsUnit.setPosition_y(10);
+                    damagePointsDec.setPosition_x(970);
+                    damagePointsDec.setPosition_y(100);
+                    damagePointsUnit.setPosition_x(990);
+                    damagePointsUnit.setPosition_y(100);
 
                     //Atualiza as imagens de dano
                     damagePointsUnit.setImg(new ImageIcon(Objects.requireNonNull
@@ -275,10 +275,10 @@ public class MainFrame extends JFrame implements Runnable {
                     int unit = defense % 10;
                     int decimal = defense / 10;
 
-                    defendPointsDec.setPosition_x(300);
-                    defendPointsDec.setPosition_y(170);
-                    defendPointsUnit.setPosition_x(340);
-                    defendPointsUnit.setPosition_y(170);
+                    defendPointsDec.setPosition_x(120);
+                    defendPointsDec.setPosition_y(160);
+                    defendPointsUnit.setPosition_x(140);
+                    defendPointsUnit.setPosition_y(160);
 
                     //Atualiza as imagens de defesa
                     defendPointsUnit.setImg(new ImageIcon(Objects.requireNonNull
@@ -408,6 +408,7 @@ public class MainFrame extends JFrame implements Runnable {
         Image heroDefense = new Image("img/Defense/2-2.png", 73, 160);
         Image enemyDefense = new Image("img/Defense/2-2.png", 1023, 0);
 
+        //Instancia o HP do herói e do inimigo (em números)
         Image heroHPHund = new Image("img/HP/1.png", 245, 160);
         Image heroHPDec = new Image("img/HP/0.png", 260, 160);
         Image heroHPUnit = new Image("img/HP/0.png", 280, 160);
@@ -720,7 +721,7 @@ public class MainFrame extends JFrame implements Runnable {
                 levels++;
             }
 
-            //Atualiza as imagens das barras de vida e do herói atual
+            //Atualiza as imagens das barras de vida e defesa do herói e inimigo atual
             heroHealth.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(hpBar(heroes.get(currentHero))))));
             enemyHealth.setImg(new ImageIcon(Objects.requireNonNull
@@ -729,6 +730,32 @@ public class MainFrame extends JFrame implements Runnable {
                     (this.getClass().getResource(defenseBar(heroes.get(currentHero))))));
             enemyDefense.setImg(new ImageIcon(Objects.requireNonNull
                     (this.getClass().getResource(defenseBar(enemies.get(currentEnemy))))));
+
+            //Atualiza o HP do herói
+            heroHPUnit.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().getResource("img/HP/" +
+                    heroes.get(currentHero).getHealth() % 10 + ".png"))));
+            heroHPDec.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().getResource("img/HP/" +
+                    ((heroes.get(currentHero).getHealth() % 100) / 10) + ".png"))));
+            if(heroes.get(currentHero).getHealth() < 100)
+                heroHPHund.setImg(new ImageIcon(Objects.requireNonNull
+                        (this.getClass().getResource("img/HP/null.png"))));
+            else
+                heroHPHund.setImg(new ImageIcon(Objects.requireNonNull
+                        (this.getClass().getResource("img/HP/1.png"))));
+
+            //Atualiza o HP do inimigo
+            enemyHPUnit.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().getResource("img/HP/" +
+                    enemies.get(currentEnemy).getHealth() % 10 + ".png"))));
+            enemyHPDec.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().getResource("img/HP/" +
+                    ((enemies.get(currentEnemy).getHealth() % 100) / 10) + ".png"))));
+            if(enemies.get(currentEnemy).getHealth() < 100)
+                enemyHPHund.setImg(new ImageIcon(Objects.requireNonNull
+                        (this.getClass().getResource("img/HP/null.png"))));
+            else
+                enemyHPHund.setImg(new ImageIcon(Objects.requireNonNull
+                        (this.getClass().getResource("img/HP/1.png"))));
+
+            //Atualiza o gif de quando o herói utiliza o poder especial
             if (specialGifLabel.isVisible()) {
                 heroes.get(currentHero).setImg(new ImageIcon(Objects.requireNonNull(
                         getClass().getResource("img/" + heroes.get(currentHero).getName() + "_Poder.gif"))));
@@ -759,10 +786,10 @@ public class MainFrame extends JFrame implements Runnable {
                             int unit = defense % 10;
                             int decimal = defense / 10;
 
-                            defendPointsDec.setPosition_x(900);
-                            defendPointsDec.setPosition_y(10);
-                            defendPointsUnit.setPosition_x(940);
-                            defendPointsUnit.setPosition_y(10);
+                            defendPointsDec.setPosition_x(1070);
+                            defendPointsDec.setPosition_y(0);
+                            defendPointsUnit.setPosition_x(1090);
+                            defendPointsUnit.setPosition_y(0);
 
                             //Atualiza as imagens de defesa
                             defendPointsUnit.setImg(new ImageIcon(Objects.requireNonNull
@@ -783,9 +810,9 @@ public class MainFrame extends JFrame implements Runnable {
                             int decimal = damage / 10;
 
                             defendPointsDec.setPosition_x(300);
-                            defendPointsDec.setPosition_y(170);
-                            defendPointsUnit.setPosition_x(340);
-                            defendPointsUnit.setPosition_y(170);
+                            defendPointsDec.setPosition_y(240);
+                            defendPointsUnit.setPosition_x(320);
+                            defendPointsUnit.setPosition_y(240);
 
                             //Atualiza as imagens de defesa
                             defendPointsUnit.setImg(new ImageIcon(Objects.requireNonNull

@@ -48,6 +48,9 @@ public abstract class Character extends Image {
 
         c.setHealth(c.getHealth() - damage);
 
+        if(c.getHealth() < 0)
+            c.setHealth(0);
+
         //Se o inimigo estiver com pontos de defesa após o combate, retirar sua defesa
             //(pois a defesa dura somente uma rodada)
         if(c.isDefending())
