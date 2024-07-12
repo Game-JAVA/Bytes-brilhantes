@@ -2,8 +2,8 @@
 
 <h3>Requirements</h3>
 
--Language: *Openjdk-22* 
-<p>-Framework: *JavaX*
+-Language: Openjdk-22 
+<p>-Framework: JavaX
 
 <h3>Description</h3>
 
