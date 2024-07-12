@@ -731,6 +731,7 @@ public class MainFrame extends JFrame implements Runnable {
         //Deixa os gifs animados
         //A lógica de progressão do jogo deve ser implementada aqui
         while (true) {
+            //Animação do menu
             if(levels == -2) {
                 for(int i = 0; i < 720; i++) {
                     menuPane.repaint();
@@ -739,6 +740,9 @@ public class MainFrame extends JFrame implements Runnable {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+
+                    if(!isAncestorOf(menuPane))
+                        break;
                 }
 
                 menu.setImg(new ImageIcon(Objects.requireNonNull
