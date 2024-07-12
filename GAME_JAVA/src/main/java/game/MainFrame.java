@@ -194,7 +194,7 @@ public class MainFrame extends JFrame implements Runnable {
         ArrayList<game.Character> heroes = new ArrayList<>();
         heroes.add(new Bruno(100, 7, 3, 50, "Bruno",
                 "img/Bruno.gif", 50, 200, "sound/bruno_special.wav"));
-        heroes.add(new Faria(100, 10, 5, 40, "Faria",
+        heroes.add(new Faria(100, 7, 5, 40, "Faria",
                 "img/Faria.gif", 50, 200, "sound/faria_special.wav"));
         heroes.add(new Leticia(100, 20, -2, 40, "Leticia",
                 "img/Leticia.gif", 50, 200, "sound/leticia_special.wav"));

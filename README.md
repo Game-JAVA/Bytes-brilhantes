@@ -67,4 +67,4 @@ Showing an exceptional talent from a young age for the manipulation of cosmic en
 
 <h3>Class Diagram</h3>
 
-<img width="567" alt="ClassDiagram" src="https://github.com/user-attachments/assets/4d131492-72a7-432d-aa98-c64b70640f3a">
+![Diagrama de Classes](https://github.com/user-attachments/assets/1a7de0bf-2f1c-4e65-8d7b-589addc22ba0)
