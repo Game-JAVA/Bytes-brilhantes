@@ -1,5 +1,9 @@
 *Bright-Bytes* 
 
+*requirements*
+
+-Openjdk-22
+
 *Description* 
 
 This game aims to defeat enemies until the boss arrives, where the final battle will take place. Inspired by the combat screen in Pokémon FireRed, you'll have a team of 4 heroes, each with their respective powers and abilities. In each combat you'll be able to strategically choose between one of them for battle.
@@ -58,5 +62,6 @@ Showing an exceptional talent from a young age for the manipulation of cosmic en
 
 •Mouse only.
 
-![DiagramaJogo](https://github.com/user-attachments/assets/129c8eec-6234-4d19-b0dc-5de8d2c3c465)
+<img width="704" alt="DiagramaGame" src="https://github.com/user-attachments/assets/d62b9a4a-2ffd-4e28-a248-2881871ed3d7">
+
 
