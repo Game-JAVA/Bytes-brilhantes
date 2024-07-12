@@ -57,3 +57,6 @@ Showing an exceptional talent from a young age for the manipulation of cosmic en
 *Controls* 
 
 •Mouse only.
+
+![DiagramaJogo](https://github.com/user-attachments/assets/129c8eec-6234-4d19-b0dc-5de8d2c3c465)
+
