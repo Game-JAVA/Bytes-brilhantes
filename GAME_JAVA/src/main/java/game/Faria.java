@@ -15,7 +15,7 @@ public class Faria extends Character {
     public void specialPower(Character c) {
         //Se o poder estiver carregado a 100
         if (this.getPowerCharge() >= 100) {
-            //Vai aumetar o  ataque em 3x
+            //Vai aumentar o  ataque em 3x
             this.setAttack(this.getAttack() * 3);
 
             //Poder especial ativo
@@ -29,11 +29,12 @@ public class Faria extends Character {
 
     @Override
     public int attack(Character c) {
-        if (special) {
+        if(special) {
             //Se passar de 3 rodadas, o ataque especial para de funcionar
             if (rounds >= 3) {
                 this.setAttack(this.getAttack() / 3);
                 special = false;
+                rounds = 0;
 
                 //Caso não passe,  o ataque continua funcionando
             } else {
@@ -42,6 +43,9 @@ public class Faria extends Character {
 
             //E o poder especial voltará a 0
             this.setPowerCharge(0);
+        } else {
+            //Ao atacar, aumentar a carga do poder do personagem
+            increasePowerCharge();
         }
 
         int damage;
@@ -51,8 +55,6 @@ public class Faria extends Character {
             damage = this.getAttack() - (c.getMitigation() + c.getDefense());
             if(damage < 0)
                 damage = 0;
-            //Ao atacar, aumentar a carga do poder do personagem
-            increasePowerCharge();
         } else {
             damage = 0;
             this.setImprisioned(this.getImprisioned() - 1);;
