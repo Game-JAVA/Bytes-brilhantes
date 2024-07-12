@@ -9,7 +9,7 @@ public class Valentina extends Character{
     @Override
     public void specialPower(Character c){
         //Se o poder estiver carregado
-        if (this.getPowerCharge() == 100 ) {
+        if (this.getPowerCharge() >= 100 ) {
             //Se a vida de outro heroi estiver =0
             if (c.getHealth()<= 0) {
                 //Ele recarregará a vida para 100

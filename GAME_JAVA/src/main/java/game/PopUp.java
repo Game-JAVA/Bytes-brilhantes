@@ -31,6 +31,8 @@ public class PopUp extends JDialog {
                 Character character = heroes.get(i); // Obtém o personagem na posição i da lista
                 if (isReviving && character.getHealth() > 0) {
                     continue; // Se estamos revivendo, pule os personagens com vida > 0
+                } else if (!isReviving && character.getHealth() <= 0) {
+                    continue; // Se estamos revivendo, pule os personagens com vida > 0
                 }
                 JButton button = new JButton(character.getName()); // Cria um botão com o nome do personagem
                 button.addActionListener(new ActionListener() {

@@ -5,9 +5,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Image;
-import java.net.URL;
-import javax.swing.ImageIcon;
 
 public class PauseOverlay extends JPanel {
     private boolean paused;
@@ -17,14 +14,6 @@ public class PauseOverlay extends JPanel {
         setOpaque(false);
 
         pauseImage = new game.Image("img/Pause.png", 327, 162);
-
-        /*
-        // Carregar a imagem de pausa
-        URL pauseUrl = getClass().getResource("/img/Pause.png");
-        if (pauseUrl != null) {
-            pauseImage = new ImageIcon(pauseUrl).getImage();
-        }
-         */
         paused = false;
     }
 

@@ -36,6 +36,17 @@ public class MainFrame extends JFrame implements Runnable {
             specialDefendEnemy = new Image("img/null.png", 1040, 130);
     public MainFrame() {
         pauseOverlay = new PauseOverlay();
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    togglePause();
+                }
+            }
+        });
+        setFocusable(true);
+        requestFocus();
+
         JRootPane rootPane = this.getRootPane();
         rootPane.setGlassPane(pauseOverlay);
         pauseOverlay.setVisible(false);
@@ -50,6 +61,7 @@ public class MainFrame extends JFrame implements Runnable {
                 }
             }
         });
+
         rootPane.setFocusable(true);
 
         rootPane.requestFocus();
@@ -64,6 +76,13 @@ public class MainFrame extends JFrame implements Runnable {
         createBufferStrategy(2);
         Thread t = new Thread(this);
         t.start();
+    }
+
+    private void requestFocusOnFrame() {
+        SwingUtilities.invokeLater(() -> {
+            requestFocus();
+            pauseOverlay.requestFocus();
+        });
     }
 
     private void initComponents() {
@@ -156,9 +175,9 @@ public class MainFrame extends JFrame implements Runnable {
     }
 
     private String defenseBar(Character c) {
-        if(c.getDefense() >= 15) {
+        if(c.getDefense() >= 10) {
             return "img/Defense/2.png";
-        } else if(c.getDefense() >= 10 && c.getDefense() > 0) {
+        } else if(c.getDefense() >= 5 && c.getDefense() > 0) {
             return "img/Defense/2-1.png";
         } else {
             return "img/Defense/2-2.png";
@@ -178,24 +197,24 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Array onde os heróis são instanciados
         ArrayList<game.Character> heroes = new ArrayList<>();
-        heroes.add(new Bruno(100, 11, 7, 50, "Bruno",
+        heroes.add(new Bruno(100, 7, 3, 50, "Bruno",
                 "img/Bruno.gif", 50, 200, "sound/bruno_special.wav"));
-        heroes.add(new Faria(100, 15, 5, 20, "Faria",
+        heroes.add(new Faria(100, 10, 5, 40, "Faria",
                 "img/Faria.gif", 50, 200, "sound/faria_special.wav"));
         heroes.add(new Leticia(100, 20, -2, 40, "Leticia",
                 "img/Leticia.gif", 50, 200, "sound/leticia_special.wav"));
-        heroes.add(new Valentina(100, 15, 0, 20, "Valentina",
+        heroes.add(new Valentina(100, 10, 0, 20, "Valentina",
                 "img/Valentina.gif", 50, 200, "sound/valentina_special.wav"));
 
         //Array onde os vilões são instanciados
         ArrayList<game.Character> enemies = new ArrayList<>();
-        enemies.add(new Enemy(100, 12, 5, 0, "Banished Knight",
+        enemies.add(new Enemy(100, 14, 0, 0, "Banished Knight",
                 "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 14, 5, 0, "Dragon Lord",
+        enemies.add(new Enemy(100, 16, 0, 0, "Dragon Lord",
                 "img/Inimigo2.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 16, 5, 0, "Count Vamp",
+        enemies.add(new Enemy(100, 18, 0, 0, "Count Vamp",
                 "img/Inimigo3.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Boss(100 , 20, 5, 100, "Lord of Death",
+        enemies.add(new Boss(100 , 20, 0, 100, "Lord of Death",
                 "img/Chefe.gif", 975, 100, "sound/boss_special.wav"));
 
 
@@ -267,6 +286,7 @@ public class MainFrame extends JFrame implements Runnable {
                     millis2 = clock.millis();
                     action = true;
                 }
+                requestFocusOnFrame();
             }
         });
 
@@ -302,6 +322,7 @@ public class MainFrame extends JFrame implements Runnable {
                     action = true;
                     millis2 = clock.millis();
                 }
+                requestFocusOnFrame();
             }
         });
 
@@ -330,6 +351,8 @@ public class MainFrame extends JFrame implements Runnable {
                             texts.setText(currentCharacter.getName() + " revived " + selectedCharacter.getName() + "!");
                             // Define a saúde do personagem revivido para 100
                             selectedCharacter.setHealth(100);
+                            //Reseta o poder especial do personagem revivido
+                            selectedCharacter.setPowerCharge(0);
 
                             // Exibe o GIF especial no JLabel e define sua posição
                             specialGifLabel.setVisible(true);
@@ -358,7 +381,7 @@ public class MainFrame extends JFrame implements Runnable {
                         texts.setText(currentCharacter.getName() + " used special attack on " +
                                 enemies.get(currentEnemy).getName() + "!");
 
-                       specialGifLabel.setVisible(true);
+                        specialGifLabel.setVisible(true);
 
                         // Remove o GIF especial após um tempo (3 segundos)
                         // Cria um novo timer que executará uma ação após 3000 milissegundos (3 segundos)
@@ -381,6 +404,7 @@ public class MainFrame extends JFrame implements Runnable {
                 } else if(!action) {
                     texts.setText("Power charge is at " + currentCharacter.getPowerCharge() + "%!");
                 }
+                requestFocusOnFrame();
             }
         });
 
@@ -403,13 +427,13 @@ public class MainFrame extends JFrame implements Runnable {
                         repaint(); // Redesenha a tela após a troca de personagem
                         // Atualiza o texto para mostrar que o herói atual foi trocado
                         texts.setText("Swapped to " + selectedCharacter.getName() + "!");
+
+                        action = true;
+                        millis2 = clock.millis();
                     }
-
-                    action = true;
-                    millis2 = clock.millis();
-
                     click.play();
                 }
+                requestFocusOnFrame();
             }
         });
 
@@ -576,9 +600,9 @@ public class MainFrame extends JFrame implements Runnable {
                 int x = e.getX();
                 int y = e.getY();
 
-                if(y >= 530 && y <= 590) {
+                if(y >= 530 && y <= 600) {
                     //Caso clique no botão de start, troca para a tela de combate
-                    if(x >= 370 && x <= 530){
+                    if(x >= 470 && x <= 640){
                         start.play();
                         remove(menuPane);
                         add(instructionsPane);
@@ -586,7 +610,7 @@ public class MainFrame extends JFrame implements Runnable {
                         //Fecha e abre a tela para atualizar
                         setVisible(false);
                         setVisible(true);
-                    } else if(x >= 730 && x <= 890) { //Se clicar no botão de sair, fecha a tela e encerra o programa
+                    } else if(x >= 660 && x <= 830) { //Se clicar no botão de sair, fecha a tela e encerra o programa
                         click.play();
                         setVisible(false);
                         System.exit(0);
@@ -606,7 +630,7 @@ public class MainFrame extends JFrame implements Runnable {
                 int x = e.getX();
                 int y = e.getY();
 
-                if(((x >= 370 && x <= 530) || (x >= 560 && x <= 710) || (x >= 730 && x <= 890)) && (y >= 530 && y <= 590)){
+                if(((x >= 470 && x <= 640) || (x >= 660 && x <= 830)) && (y >= 530 && y <= 600)){
                     menuPane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
                 } else {
                     menuPane.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -726,14 +750,18 @@ public class MainFrame extends JFrame implements Runnable {
         //Deixa os gifs animados
         //A lógica de progressão do jogo deve ser implementada aqui
         while (true) {
+            //Animação do menu
             if(levels == -2) {
-                for(int i = 0; i < 200; i++) {
+                for(int i = 0; i < 720; i++) {
                     menuPane.repaint();
                     try {
                         Thread.sleep(5);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+
+                    if(!isAncestorOf(menuPane))
+                        break;
                 }
 
                 menu.setImg(new ImageIcon(Objects.requireNonNull
@@ -786,15 +814,15 @@ public class MainFrame extends JFrame implements Runnable {
 
             millis1 = clock.millis();
             //Caso uma ação aconteça (botão seja pressionado), passa o round pro inimigo
-                //Se o boss estiver com o poder especial completo, usa o poder especial
-                //Se não, tem 75% de chance de atacar e 25% de defender
+            //Se o boss estiver com o poder especial completo, usa o poder especial
+            //Se não, tem 75% de chance de atacar e 25% de defender
             if(action && (millis1 - millis2) > 2000) {
                 cleanNumbers();
 
                 if (enemies.get(currentEnemy).getPowerCharge() >= 100 && enemies.get(currentEnemy).getImprisioned() == 0) {
                     enemies.get(currentEnemy).specialPower(heroes.get(currentHero));
                     texts.setText(enemies.get(currentEnemy).getName() + " stole " + heroes.get(currentHero).getName()
-                    + "'s own blood!");
+                            + "'s own blood!");
                 } else {
                     int decision = r.nextInt(0, 4);
                     if (decision == 3) {
@@ -940,7 +968,7 @@ public class MainFrame extends JFrame implements Runnable {
                 if(hero.getHealth() <= 0){
                     deads++;
                 } else {
-                   alive = heroes.indexOf(hero);
+                    alive = heroes.indexOf(hero);
                 }
             }
 
@@ -950,6 +978,7 @@ public class MainFrame extends JFrame implements Runnable {
                 add(defeatPane);
 
                 level.setStop(true);
+                boss.setStop(true);
                 defeatSound.play();
 
                 setVisible(false);
@@ -958,6 +987,21 @@ public class MainFrame extends JFrame implements Runnable {
                 texts.setText("Hero: " + heroes.get(currentHero).getName() +" is dead!");
                 currentHero = alive;
             }
+
+            //Indicador de poder especial, alterando o texto do botão
+            if(heroes.get(currentHero).getPowerCharge() >= 100) {
+                buttons.get(2).setText("SPECIAL READY");
+            } else {
+                buttons.get(2).setText("Special");
+            }
+
+            //Não deixa aumentar o poder especial da leticia caso o inimigo esteja emprisionado
+            if(enemies.get(currentEnemy).getImprisioned() > 0)
+                heroes.get(2).setPowerCharge(0);
+
+            if (isPaused)
+                continue;
+
 
             //Atualiza as animações na tela
             division.repaint();
