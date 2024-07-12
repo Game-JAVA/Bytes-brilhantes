@@ -25,9 +25,9 @@ public class MainFrame extends JFrame implements Runnable {
             damagePointsUnit = new Image("img/Attack/null.png", 350, 170),
             defendPointsDec = new Image("img/Defend/null.png", 900, 10),
             defendPointsUnit = new Image("img/Defend/null.png", 950, 10),
-            specialAttackHero = new Image("img/null.png", 1050, 200),
+            specialAttackHero = new Image("img/null.png", 1030, 170),
             specialDefendHero = new Image("img/null.png", 120,280),
-            specialAttackEnemy = new Image("img/null.png",130,280),
+            specialAttackEnemy = new Image("img/null.png",120,280),
             specialDefendEnemy = new Image("img/null.png", 1040, 130);
     public MainFrame() {
         pauseOverlay = new PauseOverlay();
@@ -251,6 +251,7 @@ public class MainFrame extends JFrame implements Runnable {
         buttons.get(0).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(!action) {
+                    millis2 = clock.millis();
                     cleanNumbers();
 
                     // Executa o ataque do herói atual (currentHero) contra o vilão (heroes.get(1))
@@ -277,8 +278,6 @@ public class MainFrame extends JFrame implements Runnable {
                     damagePointsDec.setImg(new ImageIcon(Objects.requireNonNull
                             (this.getClass().getResource("img/Attack/" + decimal + ".png"))));
 
-
-                    millis2 = clock.millis();
                     action = true;
                 }
                 requestFocusOnFrame();
@@ -289,6 +288,7 @@ public class MainFrame extends JFrame implements Runnable {
         buttons.get(1).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(!action) {
+                    millis2 = clock.millis();
                     cleanNumbers();
 
                     // Executa a defesa do herói atual (currentHero)
@@ -313,9 +313,7 @@ public class MainFrame extends JFrame implements Runnable {
                     defendPointsDec.setImg(new ImageIcon(Objects.requireNonNull
                             (this.getClass().getResource("img/Defend/" + decimal + ".png"))));
 
-
                     action = true;
-                    millis2 = clock.millis();
                 }
                 requestFocusOnFrame();
             }
@@ -876,8 +874,10 @@ public class MainFrame extends JFrame implements Runnable {
                     }
                 }
 
+                millis2 = clock.millis();
                 action = false;
-            }
+            } else if((millis1 - millis2) >= 1000)
+                cleanNumbers();
 
             //Se zerar a vida do inimigo, avança o nível
             if((enemies.get(currentEnemy).getHealth() <= 0 && isAncestorOf(division)) || isAncestorOf(transitionPane)) {
@@ -885,6 +885,8 @@ public class MainFrame extends JFrame implements Runnable {
                     currentEnemy++;
 
                 if(levels < 3) {
+                    cleanNumbers();
+
                     level.setStop(true);
                     menuSong.setStop(true);
 
