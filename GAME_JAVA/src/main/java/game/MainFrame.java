@@ -558,9 +558,9 @@ public class MainFrame extends JFrame implements Runnable {
                 int x = e.getX();
                 int y = e.getY();
 
-                if(y >= 530 && y <= 590) {
+                if(y >= 530 && y <= 600) {
                     //Caso clique no botão de start, troca para a tela de combate
-                    if(x >= 370 && x <= 530){
+                    if(x >= 470 && x <= 640){
                         start.play();
                         remove(menuPane);
                         add(instructionsPane);
@@ -568,7 +568,7 @@ public class MainFrame extends JFrame implements Runnable {
                         //Fecha e abre a tela para atualizar
                         setVisible(false);
                         setVisible(true);
-                    } else if(x >= 730 && x <= 890) { //Se clicar no botão de sair, fecha a tela e encerra o programa
+                    } else if(x >= 660 && x <= 830) { //Se clicar no botão de sair, fecha a tela e encerra o programa
                         click.play();
                         setVisible(false);
                         System.exit(0);
@@ -588,7 +588,7 @@ public class MainFrame extends JFrame implements Runnable {
                 int x = e.getX();
                 int y = e.getY();
 
-                if(((x >= 370 && x <= 530) || (x >= 560 && x <= 710) || (x >= 730 && x <= 890)) && (y >= 530 && y <= 590)){
+                if(((x >= 470 && x <= 640) || (x >= 660 && x <= 830)) && (y >= 530 && y <= 600)){
                     menuPane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
                 } else {
                     menuPane.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
