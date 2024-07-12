@@ -12,7 +12,7 @@ This hero is a warrior who aims to protect his team and population, as he came f
 
 *Valentina* 
 
-Because she has sorcerer parents, she has always had a very strong connection to the spirit world. With the ability to communicate with other spiritual planes, she was trained by an ancient and wise necromancer, where she became interested in the forbidden arts in which she learned and perfected her power to resurrect an ally every 2 levels.
+Because she has sorcerer parents, she has always had a very strong connection to the spirit world. With the ability to communicate with other spiritual planes, she was trained by an ancient and wise necromancer, where she became interested in the forbidden arts in which she learned and perfected her power to resurrect an ally every 2 rounds.
 
 *Bruno* 
 
@@ -46,14 +46,17 @@ Showing an exceptional talent from a young age for the manipulation of cosmic en
 
 •The only rule is that the special powers have a charging limit, and to recharge it you need to attack and defend.
 
-•Faria: Special power recharges every 5 turns. 
+•Faria: Special power recharges every 3 turns. 
 
-•Valentina: Special power recharges every 10 turns. 
+•Valentina: Special power recharges every 5 turns. 
 
 •Bruno: Special power recharges every 2 turns. 
 
-•Leticia: Special power recharges every 7 turns. 
+•Leticia: Special power recharges every 3 turns. 
 
 *Controls* 
 
 •Mouse only.
+
+![DiagramaJogo](https://github.com/user-attachments/assets/129c8eec-6234-4d19-b0dc-5de8d2c3c465)
+

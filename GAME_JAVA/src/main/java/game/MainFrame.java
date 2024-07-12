@@ -24,8 +24,11 @@ public class MainFrame extends JFrame implements Runnable {
     private final Image damagePointsDec = new Image("img/Attack/null.png", 300, 170),
             damagePointsUnit = new Image("img/Attack/null.png", 350, 170),
             defendPointsDec = new Image("img/Defend/null.png", 900, 10),
-            defendPointsUnit = new Image("img/Defend/null.png", 950, 10);
-
+            defendPointsUnit = new Image("img/Defend/null.png", 950, 10),
+            specialAttackHero = new Image("img/null.png", 1050, 200),
+            specialDefendHero = new Image("img/null.png", 120,280),
+            specialAttackEnemy = new Image("img/null.png",130,280),
+            specialDefendEnemy = new Image("img/null.png", 1040, 130);
     public MainFrame() {
         pauseOverlay = new PauseOverlay();
         addKeyListener(new KeyAdapter() {
@@ -256,6 +259,10 @@ public class MainFrame extends JFrame implements Runnable {
                     texts.setText(heroes.get(currentHero).getName() + " attacked " +
                             enemies.get(currentEnemy).getName() + ", dealing " + damage + " damage!");
 
+                    //Atualiza a imagem ao atacar o inimigo
+                    specialAttackHero.setImg(new ImageIcon(Objects.requireNonNull
+                            (this.getClass().getResource("img/attack.png"))));
+
                     int unit = damage % 10;
                     int decimal = damage / 10;
 
@@ -269,6 +276,7 @@ public class MainFrame extends JFrame implements Runnable {
                             (this.getClass().getResource("img/Attack/" + unit + ".png"))));
                     damagePointsDec.setImg(new ImageIcon(Objects.requireNonNull
                             (this.getClass().getResource("img/Attack/" + decimal + ".png"))));
+
 
                     millis2 = clock.millis();
                     action = true;
@@ -288,6 +296,9 @@ public class MainFrame extends JFrame implements Runnable {
                     // Atualiza o texto para mostrar que o herói atual defendeu contra o vilão
                     texts.setText(heroes.get(currentHero).getName() + " defended itself by " + defense + " points!");
 
+                    specialDefendHero.setImg(new ImageIcon(Objects.requireNonNull
+                            (this.getClass().getResource("img/defend.png"))));
+
                     int unit = defense % 10;
                     int decimal = defense / 10;
 
@@ -301,6 +312,7 @@ public class MainFrame extends JFrame implements Runnable {
                             (this.getClass().getResource("img/Defend/" + unit + ".png"))));
                     defendPointsDec.setImg(new ImageIcon(Objects.requireNonNull
                             (this.getClass().getResource("img/Defend/" + decimal + ".png"))));
+
 
                     action = true;
                     millis2 = clock.millis();
@@ -437,6 +449,7 @@ public class MainFrame extends JFrame implements Runnable {
         Image enemyHPDec = new Image("img/HP/0.png", 1210, 0);
         Image enemyHPUnit = new Image("img/HP/0.png", 1230, 0);
 
+
         //Cria o JPane em que as imagens (jogador, inimigo e plano de fundo) são desenhadas
         JPanel pane = new JPanel() {
             @Override
@@ -463,6 +476,12 @@ public class MainFrame extends JFrame implements Runnable {
                 enemyHPUnit.draw(g);
                 enemyHPHund.draw(g);
                 enemyHPDec.draw(g);
+
+                specialAttackHero.draw(g);
+                specialDefendHero.draw(g);
+                specialAttackEnemy.draw(g);
+                specialDefendEnemy.draw(g);
+
             }
         };
 
@@ -805,6 +824,10 @@ public class MainFrame extends JFrame implements Runnable {
                             texts.setText(enemies.get(currentEnemy).getName() + " defended itself by " + defense +
                                     " points!");
 
+                            //Mostra a imagem ao se defender
+                            specialDefendEnemy.setImg(new ImageIcon(Objects.requireNonNull
+                                    (this.getClass().getResource("img/defend.png"))));
+
                             int unit = defense % 10;
                             int decimal = defense / 10;
 
@@ -818,6 +841,7 @@ public class MainFrame extends JFrame implements Runnable {
                                     (this.getClass().getResource("img/Defend/" + unit + ".png"))));
                             defendPointsDec.setImg(new ImageIcon(Objects.requireNonNull
                                     (this.getClass().getResource("img/Defend/" + decimal + ".png"))));
+
                         }
                         else {
                             texts.setText(enemies.get(currentEnemy).getName() + " is imprisioned!");
@@ -827,6 +851,10 @@ public class MainFrame extends JFrame implements Runnable {
                         if (damage != -1) {
                             texts.setText(enemies.get(currentEnemy).getName() + " attacked " +
                                     heroes.get(currentHero).getName() + ", dealing " + damage + " damage!");
+
+                            //Mostra a imagem ao atacar o Heroi
+                            specialAttackEnemy.setImg(new ImageIcon(Objects.requireNonNull
+                                    (this.getClass().getResource("img/attack.png"))));
 
                             int unit = damage % 10;
                             int decimal = damage / 10;
@@ -1009,5 +1037,16 @@ public class MainFrame extends JFrame implements Runnable {
                 (this.getClass().getResource("img/Defend/null.png"))));
         damagePointsUnit.setImg(new ImageIcon(Objects.requireNonNull
                 (this.getClass().getResource("img/Defend/null.png"))));
+
+        // Limpa as imagens dos ataques e defesas especiais da tela
+        specialAttackHero.setImg(new ImageIcon(Objects.requireNonNull
+                (this.getClass().getResource("img/null.png"))));
+        specialDefendHero.setImg(new ImageIcon(Objects.requireNonNull
+                (this.getClass().getResource("img/null.png"))));
+        specialAttackEnemy.setImg(new ImageIcon(Objects.requireNonNull
+                (this.getClass().getResource("img/null.png"))));
+        specialDefendEnemy.setImg(new ImageIcon(Objects.requireNonNull
+                (this.getClass().getResource("img/null.png"))));
     }
+
 }
