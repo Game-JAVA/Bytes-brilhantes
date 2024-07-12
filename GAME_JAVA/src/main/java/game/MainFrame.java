@@ -20,12 +20,7 @@ public class MainFrame extends JFrame implements Runnable {
     private Random r = new Random();
     private JLabel specialGifLabel; // Novo JLabel para exibir o GIF especial
     private final Sound click = new Sound("sound/buttonClick.wav", false),
-            start = new Sound("sound/start.wav", false),
-            defeatSound = new Sound("sound/defeat.wav", false),
-            victorySound = new Sound("sound/victory.wav", false),
-            menuSong = new Sound("sound/menu.wav", true),
-            level = new Sound("sound/level.wav", true),
-            boss = new Sound("sound/boss.wav", true);
+            start = new Sound("sound/start.wav", false);
     private final Image damagePointsDec = new Image("img/Attack/null.png", 300, 170),
             damagePointsUnit = new Image("img/Attack/null.png", 350, 170),
             defendPointsDec = new Image("img/Defend/null.png", 900, 10),
@@ -208,11 +203,11 @@ public class MainFrame extends JFrame implements Runnable {
 
         //Array onde os vilões são instanciados
         ArrayList<game.Character> enemies = new ArrayList<>();
-        enemies.add(new Enemy(100, 14, 0, 0, "Banished Knight",
+        enemies.add(new Boss(100, 14, 0, 0, "Banished Knight",
                 "img/Inimigo1.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 16, 0, 0, "Dragon Lord",
+        enemies.add(new Boss(100, 16, 0, 0, "Dragon Lord",
                 "img/Inimigo2.gif", 1000, 50, "sound/hit.wav"));
-        enemies.add(new Enemy(100, 18, 0, 0, "Count Vamp",
+        enemies.add(new Boss(100, 18, 0, 0, "Count Vamp",
                 "img/Inimigo3.gif", 1000, 50, "sound/hit.wav"));
         enemies.add(new Boss(100 , 20, 0, 100, "Lord of Death",
                 "img/Chefe.gif", 975, 100, "sound/boss_special.wav"));
@@ -532,12 +527,6 @@ public class MainFrame extends JFrame implements Runnable {
                 int y = e.getY();
 
                 if(x >= 1090 && x <= 1220 && y >= 570 && y <= 630) {
-                    start.play();
-                    //A música do nível pode ser tocada novamente
-                    level.setStop(false);
-                    boss.setStop(false);
-                    //Para a música do menu
-                    menuSong.setStop(true);
                     remove(instructionsPane);
                     add(transitionPane);
 
@@ -559,6 +548,8 @@ public class MainFrame extends JFrame implements Runnable {
                     levels = -1;
                     currentEnemy = 0;
                     currentHero = 0;
+
+                    start.play();
 
                     //Fecha e abre a tela para atualizar
                     setVisible(false);
@@ -601,7 +592,7 @@ public class MainFrame extends JFrame implements Runnable {
                 int y = e.getY();
 
                 if(y >= 530 && y <= 600) {
-                    //Caso clique no botão de start, troca para a tela de combate
+                    //Caso clique no botão de start, troca para a tela de instruções
                     if(x >= 470 && x <= 640){
                         start.play();
                         remove(menuPane);
@@ -660,13 +651,10 @@ public class MainFrame extends JFrame implements Runnable {
                     levels = -2;
                     remove(defeatPane);
                     add(menuPane);
-                    menuSong.setStop(false);
 
                     //Fecha e abre a tela para atualizar
                     setVisible(false);
                     setVisible(true);
-
-                    menuSong.play();
                 }
             }
         });
@@ -708,13 +696,10 @@ public class MainFrame extends JFrame implements Runnable {
                     levels = -2;
                     remove(victoryPane);
                     add(menuPane);
-                    menuSong.setStop(false);
 
                     //Fecha e abre a tela para atualizar
                     setVisible(false);
                     setVisible(true);
-
-                    menuSong.play();
                 } else if(x >= 660 && x <= 790 && y >= 510 && y <= 560) {
                     setVisible(false);
                     System.exit(0);
@@ -740,11 +725,17 @@ public class MainFrame extends JFrame implements Runnable {
         });
         victoryPane.setVisible(true);
 
+        //Instancia as músicas do jogo
+        Sound defeatSound = new Sound("sound/defeat.wav", false),
+                victorySound = new Sound("sound/victory.wav", false),
+                menuSong = new Sound("sound/menu.wav", true),
+                level = new Sound("sound/level.wav", true),
+                boss = new Sound("sound/boss.wav", true);
+
         //Abre em tela cheia
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         //Abre a tela
         setVisible(true);
-        menuSong.play();
 
         //Entra num while infinito que vai atualizar as imagens a cada 200ms através da função "updateUI() de division"
         //Deixa os gifs animados
@@ -752,6 +743,8 @@ public class MainFrame extends JFrame implements Runnable {
         while (true) {
             //Animação do menu
             if(levels == -2) {
+                menuSong.play();
+
                 for(int i = 0; i < 720; i++) {
                     menuPane.repaint();
                     try {
@@ -893,6 +886,7 @@ public class MainFrame extends JFrame implements Runnable {
 
                 if(levels < 3) {
                     level.setStop(true);
+                    menuSong.setStop(true);
 
                     remove(division);
                     add(transitionPane);
@@ -931,9 +925,18 @@ public class MainFrame extends JFrame implements Runnable {
 
                 //Muda o background de acordo com o nível atual
                 switch(levels) {
+                    case -2:
+                        menuSong.play();
+                        break;
+
                     case -1:
                         backgroundImage.setImg(new ImageIcon(Objects.requireNonNull(this.getClass().
                                 getResource("img/Background1.png"))));
+                        //A música do nível pode ser tocada novamente
+                        level.setStop(false);
+                        boss.setStop(false);
+                        //Para a música do menu
+                        menuSong.setStop(true);
                         break;
 
                     case 0:
@@ -1002,6 +1005,10 @@ public class MainFrame extends JFrame implements Runnable {
             if (isPaused)
                 continue;
 
+            if(isAncestorOf(menuPane) && menuSong.getStop()) {
+                menuSong.setStop(false);
+                menuSong.play();
+            }
 
             //Atualiza as animações na tela
             division.repaint();
