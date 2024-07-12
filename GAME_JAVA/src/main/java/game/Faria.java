@@ -61,10 +61,6 @@ public class Faria extends Character {
             return -1;
         }
 
-        //10% de chance de acerto crítico
-        if (r.nextInt(0,100) < 10)
-            damage *= 2;
-
         c.setHealth(c.getHealth() - damage);
 
         if(c.getHealth() < 0)
