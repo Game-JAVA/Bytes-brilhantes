@@ -1,14 +1,15 @@
-*Bright-Bytes* 
+<h1>Bright-Bytes</h1>
 
-*requirements*
+<h3>Requirements</h3>
 
--Openjdk-22
+-Language: *Openjdk-22* 
+<p>-Framework: *JavaX*
 
-*Description* 
+<h3>Description</h3>
 
 This game aims to defeat enemies until the boss arrives, where the final battle will take place. Inspired by the combat screen in Pokémon FireRed, you'll have a team of 4 heroes, each with their respective powers and abilities. In each combat you'll be able to strategically choose between one of them for battle.
 
-*Heroes* 
+<h3>Heroes</h3>
 
 *Faria* 
 
@@ -26,7 +27,9 @@ Because he had an affinity with the elements since he was a child, he decided to
 
 Showing an exceptional talent from a young age for the manipulation of cosmic energies, she caught the attention of the wise astrologers, in which she took classes to further improve her powers, in which one of the healers saw an incredible potential and determined that she focus and make her special ability to stun her enemies at the time of battle, causing them to be 2 wheels without having enough strength to participate in combat.
 
-*How to play*
+<h2>How to play</h2>
+
+![tutorialGame](https://github.com/user-attachments/assets/fa3a7f22-9428-44c9-b7f5-329b33dcc4d8)
 
 •Genre : Turn-based RPG. 
 
@@ -46,7 +49,7 @@ Showing an exceptional talent from a young age for the manipulation of cosmic en
 
 •The game consists of four phases, the first three are battles against the enemy and the fourth and last phase is a battle against the boss. 
 
-*Rules* 
+<h3>Rules</h3>
 
 •The only rule is that the special powers have a charging limit, and to recharge it you need to attack and defend.
 
@@ -58,9 +61,11 @@ Showing an exceptional talent from a young age for the manipulation of cosmic en
 
 •Leticia: Special power recharges every 3 turns. 
 
-*Controls* 
+<h3>Controls</h3> 
 
 •Mouse only.
+
+<h3>Class Diagram</h3>
 
 <img width="704" alt="DiagramaGame" src="https://github.com/user-attachments/assets/d62b9a4a-2ffd-4e28-a248-2881871ed3d7">
 
