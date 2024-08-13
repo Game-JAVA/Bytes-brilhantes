@@ -575,7 +575,7 @@ public class MainFrame extends JFrame implements Runnable {
         instructionsPane.setVisible(true);
 
         //Painel que contém o menu
-        Image menu = new Image("img/MenuStart.gif", 0, 0);
+        Image menu = new Image("img/MenuStart2.gif", 0, 0);
         JPanel menuPane = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -756,7 +756,7 @@ public class MainFrame extends JFrame implements Runnable {
                 }
 
                 menu.setImg(new ImageIcon(Objects.requireNonNull
-                        (this.getClass().getResource("img/MenuBlink.gif"))));
+                        (this.getClass().getResource("img/MenuBlink2.gif"))));
                 levels++;
             }
 
